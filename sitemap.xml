@@ -4,7 +4,7 @@
   <url>
     <loc>https://foldradar.vercel.app/</loc>
     <lastmod>2026-07-20</lastmod>
-    <xhtml:link rel="alternate" hreflang="de" href="https://foldradar.vercel.app/de/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://foldradar.vercel.app/de"/>
   </url>
   <url>
     <loc>https://foldradar.vercel.app/iphone-fold</loc>
@@ -28,7 +28,7 @@
     <lastmod>2026-07-20</lastmod>
   </url>
   <url>
-    <loc>https://foldradar.vercel.app/de/</loc>
+    <loc>https://foldradar.vercel.app/de</loc>
     <lastmod>2026-07-20</lastmod>
     <xhtml:link rel="alternate" hreflang="en" href="https://foldradar.vercel.app/"/>
   </url>
