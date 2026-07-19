@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://foldradar.vercel.app/</loc>
+    <lastmod>2026-07-20</lastmod>
+    <xhtml:link rel="alternate" hreflang="de" href="https://foldradar.vercel.app/de/"/>
+  </url>
+  <url>
+    <loc>https://foldradar.vercel.app/iphone-fold</loc>
+    <lastmod>2026-07-20</lastmod>
+    <xhtml:link rel="alternate" hreflang="de" href="https://foldradar.vercel.app/de/iphone-fold"/>
+  </url>
+  <url>
+    <loc>https://foldradar.vercel.app/iphone-fold-release-date</loc>
+    <lastmod>2026-07-20</lastmod>
+  </url>
+  <url>
+    <loc>https://foldradar.vercel.app/iphone-fold-price</loc>
+    <lastmod>2026-07-20</lastmod>
+  </url>
+  <url>
+    <loc>https://foldradar.vercel.app/iphone-fold-vs-galaxy-z-fold</loc>
+    <lastmod>2026-07-20</lastmod>
+  </url>
+  <url>
+    <loc>https://foldradar.vercel.app/best-foldable-phones</loc>
+    <lastmod>2026-07-20</lastmod>
+  </url>
+  <url>
+    <loc>https://foldradar.vercel.app/de/</loc>
+    <lastmod>2026-07-20</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://foldradar.vercel.app/"/>
+  </url>
+  <url>
+    <loc>https://foldradar.vercel.app/de/iphone-fold</loc>
+    <lastmod>2026-07-20</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://foldradar.vercel.app/iphone-fold"/>
+  </url>
+  <url>
+    <loc>https://foldradar.vercel.app/about</loc>
+    <lastmod>2026-07-20</lastmod>
+  </url>
+</urlset>

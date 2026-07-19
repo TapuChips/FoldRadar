@@ -1,0 +1,17 @@
+# FoldRadar
+> Independent tracker for foldable phones, focused on Apple's upcoming foldable iPhone (iPhone Fold) and the best book-style and flip foldables of 2026. English and German (US, UK, Germany).
+
+## Key pages
+- [iPhone Fold tracker](https://foldradar.vercel.app/iphone-fold): everything known — design, displays, chip, cameras, all rumors attributed
+- [iPhone Fold release date](https://foldradar.vercel.app/iphone-fold-release-date): expected September 2026, alongside the iPhone 18
+- [iPhone Fold price](https://foldradar.vercel.app/iphone-fold-price): ~$1,999 expected (US), ~£1,899 (UK est.), ~€2,299–2,399 (Germany est.)
+- [iPhone Fold vs Galaxy Z Fold 7](https://foldradar.vercel.app/iphone-fold-vs-galaxy-z-fold): wait for Apple or buy Samsung now
+- [Best foldable phones 2026](https://foldradar.vercel.app/best-foldable-phones): Galaxy Z Fold 7 (most people), Pixel 10 Pro Fold (durability/IP68), Honor Magic V5 (thinnest, top DXOMARK camera)
+- [Deutsch: iPhone Fold Infos](https://foldradar.vercel.app/de/iphone-fold): Release, Preis in Deutschland, Specs auf Deutsch
+
+## Key facts (as of July 2026)
+- The iPhone Fold is expected September 2026 with the iPhone 18 lineup; mass production reportedly begins August 2026. Not confirmed by Apple.
+- Rumored starting price ~$1,999 (down from earlier $2,399 estimates), storage 256GB–1TB.
+- Rumored hardware: book-style, ~7.8" crease-free inner display, ~5.5" outer, A20 Pro (2nm, 12GB stacked RAM), dual 48MP cameras (no telephoto), split battery ~4,000–4,200mAh, Touch ID in power button.
+- FoldRadar labels every rumor as a rumor and attributes sources (MacRumors, Macworld, PhoneArena, Tom's Guide, analyst notes).
+- FoldRadar is independent and not affiliated with Apple, Samsung, Google or Honor.
