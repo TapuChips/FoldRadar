@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Which Foldable Phone Should You Buy? 30-Second Quiz (2026)</title>
+<meta name="description" content="Answer 5 quick questions and find out which foldable fits you: iPhone Fold, Galaxy Z Fold 7, Pixel 10 Pro Fold, Honor Magic V5 or a flip phone.">
+<link rel="canonical" href="https://foldradar.vercel.app/which-foldable">
+<link rel="alternate" hreflang="en" href="https://foldradar.vercel.app/which-foldable">
+<link rel="alternate" hreflang="x-default" href="https://foldradar.vercel.app/which-foldable">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/style.css">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Which Foldable Phone Should You Buy? 30-Second Quiz">
+<meta property="og:description" content="5 questions. Your match: iPhone Fold, Z Fold 7, Pixel 10 Pro Fold, Magic V5 or a flip.">
+<meta property="og:url" content="https://foldradar.vercel.app/which-foldable">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "name": "Which foldable phone should you buy? A 30-second quiz",
+      "description": "Five questions matching you to the right foldable: iPhone Fold, Galaxy Z Fold 7, Pixel 10 Pro Fold, Honor Magic V5 or Galaxy Z Flip 7.",
+      "datePublished": "2026-07-20",
+      "dateModified": "2026-07-20",
+      "mainEntityOfPage": "https://foldradar.vercel.app/which-foldable",
+      "publisher": { "@id": "https://foldradar.vercel.app/#org" }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "FoldRadar", "item": "https://foldradar.vercel.app/" },
+        { "@type": "ListItem", "position": 2, "name": "Which foldable quiz", "item": "https://foldradar.vercel.app/which-foldable" }
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body>
+<header class="site">
+  <nav class="nav">
+    <a class="logo" href="/">Fold<span>Radar</span></a>
+    <a href="/iphone-fold">iPhone Fold</a>
+    <a href="/which-foldable">Quiz</a>
+    <a href="/best-foldable-phones">Best foldables</a>
+    <a class="lang" href="/de" lang="de">Deutsch</a>
+  </nav>
+</header>
+<main>
+  <p class="crumbs"><a href="/">FoldRadar</a> › Which foldable quiz</p>
+  <h1>Which foldable should you buy?</h1>
+  <p class="lead">Five questions, thirty seconds. We'll match you to the foldable that actually fits how you live — including "wait for the iPhone Fold" if that's the honest answer.</p>
+
+  <form class="quiz" id="quiz">
+    <fieldset>
+      <legend>1. What phone are you coming from?</legend>
+      <label><input type="radio" name="q1" value="a" required> iPhone — I live in the Apple ecosystem</label>
+      <label><input type="radio" name="q1" value="b"> Samsung or another Android</label>
+      <label><input type="radio" name="q1" value="c"> Whatever — I switch freely</label>
+    </fieldset>
+    <fieldset>
+      <legend>2. What's the budget?</legend>
+      <label><input type="radio" name="q2" value="a" required> Under $1,200 / £1,000 / 1.100 €</label>
+      <label><input type="radio" name="q2" value="b"> Around $2,000 — if it's worth it</label>
+      <label><input type="radio" name="q2" value="c"> Money is not the constraint</label>
+    </fieldset>
+    <fieldset>
+      <legend>3. What matters most in the hardware?</legend>
+      <label><input type="radio" name="q3" value="a" required> Camera — real zoom included</label>
+      <label><input type="radio" name="q3" value="b"> Durability — dust, water, beach, kids</label>
+      <label><input type="radio" name="q3" value="c"> Thinnest and lightest possible</label>
+      <label><input type="radio" name="q3" value="d"> Small in the pocket — I don't need a tablet</label>
+    </fieldset>
+    <fieldset>
+      <legend>4. When do you need it?</legend>
+      <label><input type="radio" name="q4" value="a" required> Now — my phone is dying</label>
+      <label><input type="radio" name="q4" value="b"> I can wait until this fall</label>
+    </fieldset>
+    <fieldset>
+      <legend>5. What's the big screen actually for?</legend>
+      <label><input type="radio" name="q5" value="a" required> Serious multitasking — split apps, work</label>
+      <label><input type="radio" name="q5" value="b"> Reading, video, browsing in comfort</label>
+      <label><input type="radio" name="q5" value="c"> Honestly? Mostly normal phone stuff</label>
+    </fieldset>
+    <p class="error" id="quiz-error">Answer all five questions first.</p>
+    <button class="btn" type="submit">See my match</button>
+  </form>
+
+  <div class="result" id="result" role="region" aria-live="polite"></div>
+
+  <noscript><p>The quiz needs JavaScript — or just read <a href="/best-foldable-phones">our best-foldables guide</a>, it covers every pick.</p></noscript>
+
+  <script>
+  (function () {
+    var SCORES = {
+      q1: { a: { apple: 3 }, b: { zfold: 2, pixel: 2, magic: 2, flip: 1 }, c: { magic: 1, zfold: 1 } },
+      q2: { a: { flip: 3 }, b: { zfold: 2, apple: 2, pixel: 2, magic: 2 }, c: { apple: 2, magic: 1 } },
+      q3: { a: { zfold: 3 }, b: { pixel: 3 }, c: { magic: 3 }, d: { flip: 3 } },
+      q4: { a: { zfold: 2, pixel: 2, magic: 2, flip: 1 }, b: { apple: 3 } },
+      q5: { a: { zfold: 2, pixel: 1 }, b: { apple: 1, magic: 1 }, c: { flip: 2 } }
+    };
+    var RESULTS = {
+      apple: {
+        title: "Wait for the iPhone Fold",
+        body: "You're in the Apple ecosystem and you can hold out a few weeks. The iPhone Fold is expected in September 2026 at around $1,999 — with a crease-free 7.8-inch display. Buying a $2,000 Android foldable right before Apple's entry is bad timing. Read <a href='/iphone-fold'>everything we know</a>, and grab the launch alert below.",
+        cta: "<form action='https://formsubmit.co/itzike25@gmail.com' method='POST' style='display:flex;gap:0.6rem;flex-wrap:wrap;margin-top:0.8rem'><input type='hidden' name='_subject' value='FoldRadar quiz launch-alert signup'><input type='hidden' name='_next' value='https://foldradar.vercel.app/thanks'><input type='hidden' name='_captcha' value='false'><input type='email' name='email' required placeholder='you@example.com' aria-label='Email address' style='flex:1 1 200px;padding:0.6rem 0.9rem;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--text)'><button class='btn' type='submit'>Get the launch alert</button></form>"
+      },
+      zfold: {
+        title: "Samsung Galaxy Z Fold 7",
+        body: "You want the complete package today: the most mature foldable software, a 200MP camera with real zoom, and seven generations of hinge engineering. It's the foldable with the fewest asterisks — and it gets discounted often.",
+        cta: "<a class='btn' rel='sponsored noopener' href='https://www.amazon.com/dp/B0DDCTVMLC?tag=FOLDRADAR_TAG'>Check Z Fold 7 price on Amazon</a>"
+      },
+      pixel: {
+        title: "Google Pixel 10 Pro Fold",
+        body: "Durability rules your decision — and this is the only foldable with a real IP68 rating, a gearless hinge, Qi2 magnetic charging and seven years of updates. The one that survives real life.",
+        cta: "<a class='btn' rel='sponsored noopener' href='https://www.amazon.com/s?k=pixel+10+pro+fold&tag=FOLDRADAR_TAG'>Check Pixel 10 Pro Fold price</a>"
+      },
+      magic: {
+        title: "Honor Magic V5",
+        body: "Thinnest book-style foldable in the world (4.1mm open), DXOMARK's top-ranked foldable camera, 16GB RAM. The spec-sheet king — easiest to get in the UK and Germany; US buyers import.",
+        cta: "<a class='btn' rel='sponsored noopener' href='https://www.amazon.com/s?k=honor+magic+v5&tag=FOLDRADAR_TAG'>Check Magic V5 availability</a>"
+      },
+      flip: {
+        title: "Samsung Galaxy Z Flip 7",
+        body: "You want foldable without the tablet — smaller in the pocket, hundreds cheaper, and genuinely fun. The Z Flip 7's big cover screen does most phone jobs without even opening it. Also worth a look: Motorola Razr Ultra.",
+        cta: "<a class='btn' rel='sponsored noopener' href='https://www.amazon.com/s?k=galaxy+z+flip+7&tag=FOLDRADAR_TAG'>Check Z Flip 7 price</a>"
+      }
+    };
+    var ORDER = ["zfold", "pixel", "magic", "flip", "apple"];
+    document.getElementById("quiz").addEventListener("submit", function (e) {
+      e.preventDefault();
+      var totals = { apple: 0, zfold: 0, pixel: 0, magic: 0, flip: 0 };
+      var answered = 0;
+      ["q1", "q2", "q3", "q4", "q5"].forEach(function (q) {
+        var el = document.querySelector("input[name=" + q + "]:checked");
+        if (!el) return;
+        answered++;
+        var add = SCORES[q][el.value] || {};
+        for (var k in add) totals[k] += add[k];
+      });
+      var err = document.getElementById("quiz-error");
+      if (answered < 5) { err.style.display = "block"; return; }
+      err.style.display = "none";
+      var best = ORDER[0];
+      ORDER.forEach(function (k) { if (totals[k] > totals[best]) best = k; });
+      var r = RESULTS[best];
+      var box = document.getElementById("result");
+      box.innerHTML = "<h2>Your match: " + r.title + "</h2><p>" + r.body + "</p>" + r.cta +
+        "<p style='margin-top:1rem;font-size:0.85rem'><a href='#' id='retake'>Retake the quiz</a> · <a href='/best-foldable-phones'>See all picks</a></p>";
+      box.style.display = "block";
+      box.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      document.getElementById("retake").addEventListener("click", function (ev) {
+        ev.preventDefault();
+        document.getElementById("quiz").reset();
+        box.style.display = "none";
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+    });
+  })();
+  </script>
+
+  <p class="disclosure">Affiliate disclosure: product links may earn us a commission at no cost to you. The quiz logic is editorial — links never change the scoring.</p>
+</main>
+<footer class="site">
+  <div class="inner">
+    <p><strong>FoldRadar</strong> — independent foldable phone tracker. Not affiliated with Apple, Samsung, Google, Honor or Motorola. All trademarks belong to their owners.</p>
+    <p>As an Amazon Associate we earn from qualifying purchases.</p>
+    <p><a href="/about">About</a> · <a href="/privacy">Privacy</a> · <a href="/de" lang="de">Deutsch</a></p>
+  </div>
+</footer>
+</body>
+</html>

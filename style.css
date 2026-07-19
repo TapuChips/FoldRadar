@@ -98,3 +98,54 @@ footer.site a { color: var(--muted); }
 .crumbs a { color: var(--muted); }
 .badge { display: inline-block; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent); background: var(--accent-soft); border-radius: 999px; padding: 0.15rem 0.7rem; }
 .buy { font-size: 0.9rem; }
+
+/* --- Fold hero animation (pure CSS) --- */
+.foldhero {
+  display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+  margin: 1.6rem 0 0.4rem; perspective: 1200px;
+}
+.fold-phone { display: flex; transform-style: preserve-3d; }
+.fold-phone .panel {
+  width: 92px; height: 190px; border-radius: 4px;
+  background: linear-gradient(135deg, #3b4252, #1c212b);
+  border: 2px solid #454e63; position: relative;
+}
+.fold-phone .panel.left {
+  border-radius: 16px 4px 4px 16px; border-right-width: 1px;
+  background: linear-gradient(115deg, #ff8a3d 0%, #e8590c 45%, #7c2d12 100%);
+}
+.fold-phone .panel.right {
+  border-radius: 4px 16px 16px 4px; border-left-width: 1px;
+  background: linear-gradient(245deg, #ffb27a 0%, #e8590c 55%, #9a3412 100%);
+  transform-origin: left center;
+  animation: foldcycle 7s ease-in-out infinite;
+}
+.fold-phone .panel::after {
+  content: ""; position: absolute; inset: 8px; border-radius: 8px;
+  background: linear-gradient(160deg, rgba(255,255,255,0.28), rgba(255,255,255,0.04) 60%);
+}
+.foldhero .caption { font-size: 0.82rem; color: var(--muted); }
+@keyframes foldcycle {
+  0%, 12%   { transform: rotateY(-168deg); }
+  38%, 62%  { transform: rotateY(0deg); }
+  88%, 100% { transform: rotateY(-168deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fold-phone .panel.right { animation: none; transform: rotateY(0deg); }
+}
+
+/* --- Quiz --- */
+.quiz fieldset { border: 1px solid var(--border); border-radius: 14px; padding: 1rem 1.2rem; margin: 1.1rem 0; }
+.quiz legend { font-weight: 700; padding: 0 0.4rem; }
+.quiz label {
+  display: block; padding: 0.55rem 0.8rem; border: 1px solid var(--border);
+  border-radius: 10px; margin: 0.45rem 0; cursor: pointer; font-size: 0.97rem;
+}
+.quiz label:hover { border-color: var(--accent); }
+.quiz input[type="radio"] { accent-color: var(--accent); margin-right: 0.5rem; }
+.quiz .result {
+  display: none; border: 2px solid var(--accent); border-radius: 14px;
+  padding: 1.2rem 1.4rem; margin-top: 1.4rem; background: var(--accent-soft);
+}
+.quiz .result h2 { margin-top: 0; }
+.quiz .error { color: var(--accent); font-weight: 600; display: none; }
