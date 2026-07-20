@@ -2,8 +2,9 @@ name: Daily foldable news refresh
 
 on:
   schedule:
-    - cron: "0 5 * * *"   # 05:00 UTC = 07:00/08:00 Israel, before US morning traffic
-  workflow_dispatch:        # manual run button in the Actions tab
+    - cron: "0 5 * * *"    # 05:00 UTC = morning Israel/Europe, before US wakes up
+    - cron: "0 16 * * *"   # 16:00 UTC = catches news that broke during the US/EU day
+  workflow_dispatch:         # manual run button in the Actions tab
 
 permissions:
   contents: write
