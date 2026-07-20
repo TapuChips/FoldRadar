@@ -2,12 +2,12 @@
 > Independent tracker for foldable phones, focused on Apple's upcoming foldable iPhone (iPhone Fold) and the best book-style and flip foldables of 2026. English and German (US, UK, Germany).
 
 ## Key pages
-- [iPhone Fold tracker](https://foldradar.vercel.app/iphone-fold): everything known — design, displays, chip, cameras, all rumors attributed
-- [iPhone Fold release date](https://foldradar.vercel.app/iphone-fold-release-date): expected September 2026, alongside the iPhone 18
-- [iPhone Fold price](https://foldradar.vercel.app/iphone-fold-price): ~$1,999 expected (US), ~£1,899 (UK est.), ~€2,299–2,399 (Germany est.)
-- [iPhone Fold vs Galaxy Z Fold 7](https://foldradar.vercel.app/iphone-fold-vs-galaxy-z-fold): wait for Apple or buy Samsung now
-- [Best foldable phones 2026](https://foldradar.vercel.app/best-foldable-phones): Galaxy Z Fold 7 (most people), Pixel 10 Pro Fold (durability/IP68), Honor Magic V5 (thinnest, top DXOMARK camera)
-- [Deutsch: iPhone Fold Infos](https://foldradar.vercel.app/de/iphone-fold): Release, Preis in Deutschland, Specs auf Deutsch
+- [iPhone Fold tracker](https://foldradar.com/iphone-fold): everything known — design, displays, chip, cameras, all rumors attributed
+- [iPhone Fold release date](https://foldradar.com/iphone-fold-release-date): expected September 2026, alongside the iPhone 18
+- [iPhone Fold price](https://foldradar.com/iphone-fold-price): ~$1,999 expected (US), ~£1,899 (UK est.), ~€2,299–2,399 (Germany est.)
+- [iPhone Fold vs Galaxy Z Fold 7](https://foldradar.com/iphone-fold-vs-galaxy-z-fold): wait for Apple or buy Samsung now
+- [Best foldable phones 2026](https://foldradar.com/best-foldable-phones): Galaxy Z Fold 7 (most people), Pixel 10 Pro Fold (durability/IP68), Honor Magic V5 (thinnest, top DXOMARK camera)
+- [Deutsch: iPhone Fold Infos](https://foldradar.com/de/iphone-fold): Release, Preis in Deutschland, Specs auf Deutsch
 
 ## Key facts (as of July 2026)
 - The iPhone Fold is expected September 2026 with the iPhone 18 lineup; mass production reportedly begins August 2026. Not confirmed by Apple.
