@@ -1,1 +1,8 @@
 .vercel
+
+# local handoff notes — not deployed
+IMAGES-TODO.md
+
+# tooling
+node_modules/
+.DS_Store

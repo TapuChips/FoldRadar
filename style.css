@@ -303,6 +303,21 @@ tr:nth-child(even) td { background: color-mix(in srgb, var(--bg-soft) 60%, trans
 .brandtag { display: inline-flex; align-items: center; gap: 0.4rem; font-weight: 600; color: var(--muted); font-size: 0.85rem; }
 .brandtag svg { width: 15px; height: 15px; fill: currentColor; }
 
+/* product photo figures — drop-in slots for licensed Amazon images */
+.device-photo {
+  margin: 1rem 0; border: 1px solid var(--border); border-radius: 14px;
+  overflow: hidden; background: var(--bg-soft);
+}
+.device-photo img {
+  display: block; width: 100%; height: auto; aspect-ratio: 3 / 2;
+  object-fit: contain; background: #fff;
+}
+.device-photo figcaption {
+  font-size: 0.76rem; color: var(--muted); padding: 0.5rem 0.8rem;
+  border-top: 1px solid var(--border);
+}
+.device-photo.hero-photo { max-width: 320px; margin-inline: auto; }
+
 .notify {
   background: var(--bg-soft); border: 1px solid var(--border); border-radius: 16px;
   padding: 1.4rem 1.5rem; margin: 2rem 0; box-shadow: var(--shadow);
