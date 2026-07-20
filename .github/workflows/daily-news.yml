@@ -1,0 +1,34 @@
+name: Daily foldable news refresh
+
+on:
+  schedule:
+    - cron: "0 5 * * *"   # 05:00 UTC = 07:00/08:00 Israel, before US morning traffic
+  workflow_dispatch:        # manual run button in the Actions tab
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Rebuild news.html from feeds
+        run: python scripts/build_news.py
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name "foldradar-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add news.html
+          if git diff --cached --quiet; then
+            echo "No changes today."
+          else
+            git commit -m "Daily news refresh $(date -u +%F)"
+            git push
+          fi

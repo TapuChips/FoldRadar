@@ -334,6 +334,13 @@ tr:nth-child(even) td { background: color-mix(in srgb, var(--bg-soft) 60%, trans
 .faq p { color: var(--muted); font-size: 0.95rem; }
 
 .disclosure { font-size: 0.8rem; color: var(--muted); border-top: 1px dashed var(--border); margin-top: 2.4rem; padding-top: 0.9rem; }
+
+/* news feed */
+.feedlist { list-style: none; padding: 0; margin: 1rem 0; }
+.feedlist li { padding: 0.65rem 0; border-bottom: 1px solid var(--border); line-height: 1.45; }
+.feedlist a { color: var(--text); text-decoration: none; font-weight: 500; }
+.feedlist a:hover { color: var(--amber); }
+.feedlist .feedmeta { display: block; font-size: 0.78rem; color: var(--muted); margin-top: 0.15rem; }
 .crumbs { font-size: 0.82rem; color: var(--muted); margin-top: 0.4rem; }
 .crumbs a { color: var(--muted); }
 
