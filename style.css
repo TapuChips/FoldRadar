@@ -335,6 +335,24 @@ tr:nth-child(even) td { background: color-mix(in srgb, var(--bg-soft) 60%, trans
 
 .disclosure { font-size: 0.8rem; color: var(--muted); border-top: 1px dashed var(--border); margin-top: 2.4rem; padding-top: 0.9rem; }
 
+/* homepage news strip */
+.newsstrip {
+  border: 1px solid var(--border); border-radius: 16px; background: var(--bg-soft);
+  padding: 1rem 1.3rem; margin: 1.4rem 0; box-shadow: var(--shadow);
+}
+.newsstrip .ns-head { display: flex; align-items: baseline; gap: 0.8rem; flex-wrap: wrap; }
+.newsstrip .ns-eyebrow {
+  font-family: var(--display); font-size: 0.72rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.14em; color: var(--amber); margin: 0;
+}
+.newsstrip .ns-all { margin-left: auto; font-size: 0.85rem; font-weight: 600; text-decoration: none; }
+.newsstrip ul { list-style: none; margin: 0.5rem 0 0; padding: 0; }
+.newsstrip li { padding: 0.45rem 0; border-bottom: 1px solid var(--border); line-height: 1.4; }
+.newsstrip li:last-child { border-bottom: 0; }
+.newsstrip a.ns-item { color: var(--text); text-decoration: none; font-weight: 500; font-size: 0.95rem; }
+.newsstrip a.ns-item:hover { color: var(--amber); }
+.newsstrip .feedmeta { font-size: 0.76rem; color: var(--muted); margin-left: 0.5rem; }
+
 /* news feed */
 .feedlist { list-style: none; padding: 0; margin: 1rem 0; }
 .feedlist li { padding: 0.65rem 0; border-bottom: 1px solid var(--border); line-height: 1.45; }

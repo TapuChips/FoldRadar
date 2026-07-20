@@ -176,6 +176,30 @@ def build():
     (ROOT / "news.html").write_text(page, encoding="utf-8", newline="\n")
     print(f"news.html written: {len(videos)} videos, {len(news)} headlines")
 
+    # --- homepage "Today in foldables" strip: top 3 newest items overall ---
+    top3 = all_items[:3]
+    strip_lines = []
+    for item in top3:
+        t = html.escape(item["title"])
+        u = html.escape(item["link"])
+        strip_lines.append(
+            f'      <li><a class="ns-item" href="{u}" rel="noopener" target="_blank">{t}</a>'
+            f'<span class="feedmeta">{html.escape(item["source"])}</span></li>'
+        )
+    strip = "\n".join(strip_lines) or '      <li><a class="ns-item" href="/news">See today\'s foldable news →</a></li>'
+
+    index_path = ROOT / "index.html"
+    idx = index_path.read_text(encoding="utf-8")
+    start, end = "<!-- NEWS-STRIP:START -->", "<!-- NEWS-STRIP:END -->"
+    if start in idx and end in idx:
+        pre, rest = idx.split(start, 1)
+        _, post = rest.split(end, 1)
+        index_path.write_text(pre + start + "\n" + strip + "\n" + end + post,
+                              encoding="utf-8", newline="\n")
+        print(f"index.html strip updated: {len(top3)} items")
+    else:
+        print("!! NEWS-STRIP markers not found in index.html — strip skipped")
+
 
 if __name__ == "__main__":
     build()
