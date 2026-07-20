@@ -150,27 +150,25 @@ a { color: var(--amber); text-decoration-thickness: 1px; text-underline-offset: 
   perspective: 1600px; perspective-origin: 50% 42%;
 }
 .foldphone {
-  position: relative; transform-style: preserve-3d;
+  position: relative; display: flex; transform-style: preserve-3d;
   transform: rotateX(6deg) rotateY(-16deg);
 }
-.leaf { width: 132px; height: 250px; position: relative; transform-style: preserve-3d; }
+.leaf { flex: 0 0 auto; width: 132px; height: 250px; position: relative; transform-style: preserve-3d; }
 .leaf .face {
   position: absolute; inset: 0; border-radius: 10px;
   background: #0b0d14; border: 3px solid #21273a;
   box-shadow: inset 0 0 0 1px rgba(255,255,255,.04);
   backface-visibility: hidden; overflow: hidden;
 }
-/* one wallpaper spanning both halves: 200%-wide gradient, each leaf shows its half */
+/* ONE wallpaper: identical vertical gradient on both halves, so the open device
+   reads as a single continuous screen (same colours left and right of the hinge) */
 .leaf .screen {
   position: absolute; inset: 5px; border-radius: 7px; overflow: hidden;
-  background: linear-gradient(90deg, #ff7a1a 0%, #b96be0 50%, #7b6cff 100%);
-  background-size: 200% 100%;
+  background: linear-gradient(178deg, #ff7a1a 0%, #a85bd6 52%, #6c5cff 100%);
 }
 .leaf-left .face { border-radius: 16px 5px 5px 16px; }
-.leaf-left .screen { background-position: left center; }
 .leaf-right { transform-origin: left center; transform: rotateY(calc((var(--fold) - 1) * 170deg)); transition: transform .32s cubic-bezier(.5,0,.2,1); }
 .leaf-right .face-front { border-radius: 5px 16px 16px 5px; }
-.leaf-right .face-front .screen { background-position: right center; }
 .leaf-right .face-back {
   position: absolute; inset: 0; border-radius: 5px 16px 16px 5px;
   transform: rotateY(180deg); backface-visibility: hidden;
