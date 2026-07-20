@@ -47,15 +47,22 @@
           <a class="btn ghost" href="/de/iphone-fold">Zum Tracker</a>
         </div>
       </div>
-      <div class="foldstage" aria-hidden="true">
-        <div class="foldphone">
-          <div class="leaf leaf-left"><div class="face"><div class="screen"></div></div></div>
-          <div class="leaf leaf-right">
-            <div class="face face-front"><div class="screen"></div></div>
-            <div class="face-back"></div>
+      <div class="foldstage" data-fold role="group" aria-label="Interaktives Foldable — mit dem Regler auf- und zuklappen">
+        <div class="foldview">
+          <div class="foldphone">
+            <div class="leaf leaf-left"><div class="face"><div class="screen"></div></div></div>
+            <div class="leaf leaf-right">
+              <div class="face face-front"><div class="screen"></div></div>
+              <div class="face-back"></div>
+            </div>
           </div>
+          <div class="foldshadow"></div>
         </div>
-        <div class="foldshadow"></div>
+        <div class="foldctrl">
+          <button type="button" class="foldtoggle" aria-label="Handy auf- oder zuklappen">Auf / zu</button>
+          <input type="range" class="foldrange" min="0" max="100" value="100" aria-label="Handy öffnen oder schließen">
+        </div>
+        <p class="foldhint">Ziehen zum Öffnen · tippen zum Zuklappen</p>
       </div>
     </div>
     <div class="brandrail">
@@ -107,5 +114,6 @@
     <p><a href="/about">Über uns (EN)</a> · <a href="/privacy">Datenschutz (EN)</a> · <a href="/" lang="en">English</a></p>
   </div>
 </footer>
+<script defer src="/fold.js"></script>
 </body>
 </html>

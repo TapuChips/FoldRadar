@@ -61,15 +61,22 @@
           <a class="btn ghost" href="/which-foldable">Take the 30-sec quiz</a>
         </div>
       </div>
-      <div class="foldstage" aria-hidden="true">
-        <div class="foldphone">
-          <div class="leaf leaf-left"><div class="face"><div class="screen"></div></div></div>
-          <div class="leaf leaf-right">
-            <div class="face face-front"><div class="screen"></div></div>
-            <div class="face-back"></div>
+      <div class="foldstage" data-fold role="group" aria-label="Interactive foldable phone — open or close it with the slider">
+        <div class="foldview">
+          <div class="foldphone">
+            <div class="leaf leaf-left"><div class="face"><div class="screen"></div></div></div>
+            <div class="leaf leaf-right">
+              <div class="face face-front"><div class="screen"></div></div>
+              <div class="face-back"></div>
+            </div>
           </div>
+          <div class="foldshadow"></div>
         </div>
-        <div class="foldshadow"></div>
+        <div class="foldctrl">
+          <button type="button" class="foldtoggle" aria-label="Fold or unfold the phone">Fold / unfold</button>
+          <input type="range" class="foldrange" min="0" max="100" value="100" aria-label="Open or close the phone">
+        </div>
+        <p class="foldhint">Drag to open · tap to fold</p>
       </div>
     </div>
     <div class="brandrail">
@@ -151,5 +158,6 @@
     <p><a href="/about">About</a> · <a href="/privacy">Privacy</a> · <a href="/de" lang="de">Deutsch</a></p>
   </div>
 </footer>
+<script defer src="/fold.js"></script>
 </body>
 </html>
