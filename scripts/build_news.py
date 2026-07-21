@@ -105,6 +105,8 @@ def build():
 <meta name="description" content="Daily foldable phone news: iPhone Fold rumors, Galaxy Z Fold and Razr headlines, plus videos from Shane Craig and Average Dad. Updated {updated_human}.">
 <link rel="canonical" href="https://foldradar.com/news">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="/fonts/Inter-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/SpaceGrotesk-700.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/style.css">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Foldable News Today — Daily Feed">
