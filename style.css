@@ -191,23 +191,33 @@ a { color: var(--amber); text-decoration-thickness: 1px; text-underline-offset: 
   position: relative; width: 100%; min-height: 268px;
   display: flex; align-items: center; justify-content: center;
   perspective: 1600px; perspective-origin: 50% 42%;
+  cursor: grab; touch-action: pan-y; user-select: none;
 }
+.foldview.grabbing { cursor: grabbing; }
 .foldphone {
   position: relative; display: flex; transform-style: preserve-3d;
-  transform: rotateX(6deg) rotateY(-16deg);
+  transform: rotateX(var(--rotx, 6deg)) rotateY(var(--roty, -16deg));
+  will-change: transform;
 }
 .leaf { flex: 0 0 auto; width: 132px; height: 250px; position: relative; transform-style: preserve-3d; }
+/* titanium frame: gradient border via double background */
 .leaf .face {
   position: absolute; inset: 0; border-radius: 10px;
-  background: #0b0d14; border: 3px solid #21273a;
-  box-shadow: inset 0 0 0 1px rgba(255,255,255,.04);
+  border: 3px solid transparent;
+  background:
+    linear-gradient(#0b0d14, #0b0d14) padding-box,
+    linear-gradient(155deg, #6b7288 0%, #23283a 35%, #12151f 60%, #4a5068 100%) border-box;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.05);
   backface-visibility: hidden; overflow: hidden;
 }
-/* ONE wallpaper: identical vertical gradient on both halves, so the open device
-   reads as a single continuous screen (same colours left and right of the hinge) */
+/* ONE wallpaper: identical aurora on both halves = a single continuous screen */
 .leaf .screen {
   position: absolute; inset: 5px; border-radius: 7px; overflow: hidden;
-  background: linear-gradient(178deg, #ff7a1a 0%, #a85bd6 52%, #6c5cff 100%);
+  background:
+    radial-gradient(130% 90% at 18% -8%, rgba(255,140,60,.85) 0%, transparent 52%),
+    radial-gradient(140% 110% at 88% 108%, rgba(108,92,255,.9) 0%, transparent 58%),
+    radial-gradient(90% 60% at 60% 45%, rgba(185,107,224,.45) 0%, transparent 65%),
+    linear-gradient(178deg, #1b1030 0%, #0d0a1c 100%);
 }
 .leaf-left .face { border-radius: 16px 5px 5px 16px; }
 .leaf-right { transform-origin: left center; transform: rotateY(calc((var(--fold) - 1) * 170deg)); transition: transform .32s cubic-bezier(.5,0,.2,1); }
@@ -215,13 +225,24 @@ a { color: var(--amber); text-decoration-thickness: 1px; text-underline-offset: 
 .leaf-right .face-back {
   position: absolute; inset: 0; border-radius: 5px 16px 16px 5px;
   transform: rotateY(180deg); backface-visibility: hidden;
-  background: linear-gradient(135deg, #191d29, #0b0d14); border: 3px solid #21273a;
+  border: 3px solid transparent;
+  background:
+    linear-gradient(150deg, #232838, #10131d 55%, #1a1e2c) padding-box,
+    linear-gradient(155deg, #6b7288 0%, #23283a 35%, #12151f 60%, #4a5068 100%) border-box;
+  display: flex; align-items: center; justify-content: center;
 }
 .leaf-right .face-back::after { /* rear camera cluster */
   content: ""; position: absolute; top: 14px; right: 14px;
   width: 30px; height: 30px; border-radius: 9px;
   background: radial-gradient(circle at 32% 32%, #3a3f55, #12141c);
-  box-shadow: inset 0 0 0 2px #2a2f42;
+  box-shadow: inset 0 0 0 2px #2a2f42, 0 1px 4px rgba(0,0,0,.5);
+}
+/* Apple marks: etched on the back, glowing softly at the centre of the screen */
+.applemark-back { width: 38px; height: 46px; fill: #aeb6c9; opacity: .85; filter: drop-shadow(0 1px 1px rgba(0,0,0,.6)); }
+.applemark-screen {
+  position: absolute; top: 50%; left: 50%; width: 30px; height: 37px;
+  transform: translate(-50%, -50%); fill: rgba(255,255,255,.9);
+  filter: drop-shadow(0 0 10px rgba(255,255,255,.45)); z-index: 1;
 }
 .leaf .screen::before { /* punch-hole camera */
   content: ""; position: absolute; top: 8px; left: 50%; transform: translateX(-50%);

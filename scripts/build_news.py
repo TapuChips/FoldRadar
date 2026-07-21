@@ -12,6 +12,8 @@ import urllib.request
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
+from inline_css import inline_html
+
 ROOT = Path(__file__).resolve().parent.parent
 
 # (label, url, kind, filtered)  — filtered=False for foldable-only channels
@@ -175,6 +177,8 @@ def build():
 </body>
 </html>
 """
+    css = (ROOT / "style.css").read_text(encoding="utf-8")
+    page = inline_html(page, css)   # inline CSS so /news paints styled on first frame
     (ROOT / "news.html").write_text(page, encoding="utf-8", newline="\n")
     print(f"news.html written: {len(videos)} videos, {len(news)} headlines")
 
@@ -196,8 +200,8 @@ def build():
     if start in idx and end in idx:
         pre, rest = idx.split(start, 1)
         _, post = rest.split(end, 1)
-        index_path.write_text(pre + start + "\n" + strip + "\n" + end + post,
-                              encoding="utf-8", newline="\n")
+        updated = pre + start + "\n" + strip + "\n" + end + post
+        index_path.write_text(inline_html(updated, css), encoding="utf-8", newline="\n")
         print(f"index.html strip updated: {len(top3)} items")
     else:
         print("!! NEWS-STRIP markers not found in index.html — strip skipped")

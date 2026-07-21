@@ -1,11 +1,15 @@
-/* FoldRadar — interactive foldable. Slider + tap drive --fold (0 closed .. 1 open).
-   Auto-demos once, then hands control to the user on first interaction. */
+/* FoldRadar — interactive foldable.
+   Slider drives --fold (0 closed .. 1 open). Drag anywhere on the stage to
+   rotate the phone in 3D; tap it (no drag) to fold/unfold. Auto-demos once,
+   hands control to the user on first interaction. */
 (function () {
   var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   document.querySelectorAll('[data-fold]').forEach(function (stage) {
     var range = stage.querySelector('.foldrange');
     var toggle = stage.querySelector('.foldtoggle');
+    var view = stage.querySelector('.foldview');
+    var phone = stage.querySelector('.foldphone');
     var val = 100, dir = -1, raf = null, touched = false, dragTimer = null;
 
     function apply(v) {
@@ -36,6 +40,42 @@
     }
     if (toggle) {
       toggle.addEventListener('click', function () { handOff(); apply(val < 50 ? 100 : 0); });
+    }
+
+    /* --- 3D drag rotation --- */
+    if (view && phone) {
+      var rx = 6, ry = -16, dragging = false, moved = false, px = 0, py = 0;
+      function applyRot() {
+        phone.style.setProperty('--rotx', rx.toFixed(1) + 'deg');
+        phone.style.setProperty('--roty', ry.toFixed(1) + 'deg');
+      }
+      view.addEventListener('pointerdown', function (e) {
+        dragging = true; moved = false; px = e.clientX; py = e.clientY;
+        view.classList.add('grabbing');
+        try { view.setPointerCapture(e.pointerId); } catch (err) {}
+        handOff();
+      });
+      view.addEventListener('pointermove', function (e) {
+        if (!dragging) return;
+        var dx = e.clientX - px, dy = e.clientY - py;
+        if (Math.abs(dx) + Math.abs(dy) > 4) moved = true;
+        ry = Math.max(-75, Math.min(75, ry + dx * 0.45));
+        rx = Math.max(-35, Math.min(45, rx - dy * 0.35));
+        px = e.clientX; py = e.clientY;
+        applyRot();
+      });
+      ['pointerup', 'pointercancel'].forEach(function (ev) {
+        view.addEventListener(ev, function () {
+          dragging = false;
+          view.classList.remove('grabbing');
+        });
+      });
+      /* tap without dragging = fold/unfold */
+      view.addEventListener('click', function () {
+        if (moved) { moved = false; return; }
+        handOff();
+        apply(val < 50 ? 100 : 0);
+      });
     }
 
     if (!reduce) {

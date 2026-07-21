@@ -9,7 +9,480 @@
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="/fonts/Inter-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/fonts/SpaceGrotesk-700.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/style.css">
+<style data-app-css>
+/* ==========================================================================
+   FoldRadar — visual system
+   Signature: the fold seam. Two screens (warm amber + cool violet) meeting at
+   a hinge. That duotone + seam motif runs through hero, animation and quiz.
+   ========================================================================== */
+/* Self-hosted fonts — no external requests, no FOUC, GDPR-clean */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/Inter-400.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/Inter-500.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/Inter-600.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/SpaceGrotesk-500.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/SpaceGrotesk-600.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/SpaceGrotesk-700.woff2') format('woff2');
+}
+
+
+:root {
+  /* fold duotone */
+  --amber: #ff7a1a;
+  --amber-soft: #ffb37a;
+  --violet: #8b7bff;
+  --violet-deep: #6c5cff;
+
+  /* light theme surfaces */
+  --bg: #f4f5f8;
+  --bg-soft: #ffffff;
+  --card: #ffffff;
+  --text: #14161d;
+  --muted: #5c6472;
+  --border: #e3e6ee;
+  --shadow: 0 1px 2px rgba(16,18,26,.05), 0 8px 24px rgba(16,18,26,.06);
+
+  /* fixed dark ink for hero/quiz bands (theme-independent) */
+  --ink: #0a0b12;
+  --ink-2: #12141f;
+  --ink-3: #1b1e2c;
+  --ink-line: #272b3b;
+  --ink-text: #eef0f8;
+  --ink-muted: #9aa2b6;
+
+  --display: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+  --body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --max: 1000px;
+  --measure: 720px;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0c0e15;
+    --bg-soft: #14161f;
+    --card: #161925;
+    --text: #eceef4;
+    --muted: #9aa2b4;
+    --border: #262a38;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 10px 30px rgba(0,0,0,.35);
+  }
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  font-family: var(--body);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.65;
+  font-size: 17px;
+  -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3, .logo, .badge, .btn { font-family: var(--display); }
+
+/* ---------- header ---------- */
+header.site {
+  position: sticky; top: 0; z-index: 40;
+  background: color-mix(in srgb, var(--bg) 82%, transparent);
+  backdrop-filter: saturate(160%) blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+.nav {
+  max-width: var(--max); margin: 0 auto; padding: 0.7rem 1.2rem;
+  display: flex; align-items: center; gap: 1.2rem; flex-wrap: wrap;
+}
+.logo { font-weight: 700; font-size: 1.2rem; text-decoration: none; color: var(--text); letter-spacing: -0.03em; }
+.logo span { color: var(--amber); }
+.nav a { color: var(--muted); text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: color .15s; }
+.nav a:hover { color: var(--text); }
+.nav a.navquiz { color: var(--amber); }
+.nav .lang { margin-left: auto; font-size: 0.8rem; border: 1px solid var(--border); padding: 0.2rem 0.65rem; border-radius: 999px; }
+
+main { max-width: var(--max); margin: 0 auto; padding: 2rem 1.2rem 3rem; }
+main > * { max-width: var(--measure); }
+main > .grid, main > .hero, main > .quizband, main > table, main > .brandrail { max-width: 100%; }
+
+h1 { font-size: clamp(2rem, 5vw, 3rem); line-height: 1.05; letter-spacing: -0.035em; margin: 0.6rem 0 0.5rem; font-weight: 700; }
+h2 { font-size: clamp(1.35rem, 3vw, 1.7rem); letter-spacing: -0.02em; margin-top: 2.4rem; font-weight: 600; }
+h3 { font-size: 1.12rem; margin-top: 1.6rem; font-weight: 600; letter-spacing: -0.01em; }
+p { margin: 0.8rem 0; }
+a { color: var(--amber); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+.updated { color: var(--muted); font-size: 0.85rem; font-family: var(--body); }
+.lead { font-size: 1.15rem; color: var(--text); }
+
+/* eyebrow */
+.badge {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.14em;
+  color: var(--amber); background: color-mix(in srgb, var(--amber) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--amber) 35%, transparent);
+  border-radius: 999px; padding: 0.3rem 0.8rem;
+}
+.badge::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--amber); box-shadow: 0 0 0 3px color-mix(in srgb, var(--amber) 30%, transparent); }
+
+/* ==========================================================================
+   HERO — dark band, copy left, folding phone right, seam down the middle
+   ========================================================================== */
+.hero {
+  position: relative; overflow: hidden;
+  background:
+    radial-gradient(120% 90% at 88% 8%, rgba(139,123,255,.20), transparent 55%),
+    radial-gradient(120% 90% at 6% 92%, rgba(255,122,26,.20), transparent 55%),
+    linear-gradient(180deg, var(--ink), var(--ink-2));
+  color: var(--ink-text);
+  border: 1px solid var(--ink-line);
+  border-radius: 24px;
+  margin: 0.5rem 0 1.4rem;
+  padding: clamp(1.6rem, 4vw, 3rem);
+}
+.hero-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 2rem; align-items: center; }
+.hero h1 { color: var(--ink-text); }
+.hero .lead { color: var(--ink-muted); max-width: 34ch; }
+.hero .seamprice { color: var(--amber-soft); font-weight: 600; }
+.hero-cta { display: flex; gap: 0.7rem; flex-wrap: wrap; margin-top: 1.3rem; }
+
+.btn {
+  display: inline-flex; align-items: center; gap: 0.5rem; justify-content: center;
+  border: 0; cursor: pointer; text-decoration: none;
+  font-family: var(--display); font-weight: 600; font-size: 0.98rem;
+  padding: 0.7rem 1.4rem; border-radius: 12px;
+  background: linear-gradient(135deg, var(--amber), #ff5a1a);
+  color: #fff !important; box-shadow: 0 6px 20px rgba(255,90,26,.35);
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+.btn:hover { transform: translateY(-1px); box-shadow: 0 10px 26px rgba(255,90,26,.45); }
+.btn.ghost {
+  background: transparent; color: var(--ink-text) !important;
+  border: 1px solid var(--ink-line); box-shadow: none;
+}
+.btn.ghost:hover { background: rgba(255,255,255,.06); border-color: #3a3f52; }
+
+/* ---------- folding phone (interactive, book-style, ONE continuous screen) ----
+   --fold lives on .foldstage: 0 = fully closed, 1 = fully open. JS drives it
+   from the slider / toggle; CSS maps it to the hinge rotation + shadow.        */
+.foldstage {
+  --fold: 1;
+  display: flex; flex-direction: column; align-items: center; gap: 1.1rem;
+  min-height: 340px; position: relative;
+}
+.foldview {
+  position: relative; width: 100%; min-height: 268px;
+  display: flex; align-items: center; justify-content: center;
+  perspective: 1600px; perspective-origin: 50% 42%;
+  cursor: grab; touch-action: pan-y; user-select: none;
+}
+.foldview.grabbing { cursor: grabbing; }
+.foldphone {
+  position: relative; display: flex; transform-style: preserve-3d;
+  transform: rotateX(var(--rotx, 6deg)) rotateY(var(--roty, -16deg));
+  will-change: transform;
+}
+.leaf { flex: 0 0 auto; width: 132px; height: 250px; position: relative; transform-style: preserve-3d; }
+/* titanium frame: gradient border via double background */
+.leaf .face {
+  position: absolute; inset: 0; border-radius: 10px;
+  border: 3px solid transparent;
+  background:
+    linear-gradient(#0b0d14, #0b0d14) padding-box,
+    linear-gradient(155deg, #6b7288 0%, #23283a 35%, #12151f 60%, #4a5068 100%) border-box;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.05);
+  backface-visibility: hidden; overflow: hidden;
+}
+/* ONE wallpaper: identical aurora on both halves = a single continuous screen */
+.leaf .screen {
+  position: absolute; inset: 5px; border-radius: 7px; overflow: hidden;
+  background:
+    radial-gradient(130% 90% at 18% -8%, rgba(255,140,60,.85) 0%, transparent 52%),
+    radial-gradient(140% 110% at 88% 108%, rgba(108,92,255,.9) 0%, transparent 58%),
+    radial-gradient(90% 60% at 60% 45%, rgba(185,107,224,.45) 0%, transparent 65%),
+    linear-gradient(178deg, #1b1030 0%, #0d0a1c 100%);
+}
+.leaf-left .face { border-radius: 16px 5px 5px 16px; }
+.leaf-right { transform-origin: left center; transform: rotateY(calc((var(--fold) - 1) * 170deg)); transition: transform .32s cubic-bezier(.5,0,.2,1); }
+.leaf-right .face-front { border-radius: 5px 16px 16px 5px; }
+.leaf-right .face-back {
+  position: absolute; inset: 0; border-radius: 5px 16px 16px 5px;
+  transform: rotateY(180deg); backface-visibility: hidden;
+  border: 3px solid transparent;
+  background:
+    linear-gradient(150deg, #232838, #10131d 55%, #1a1e2c) padding-box,
+    linear-gradient(155deg, #6b7288 0%, #23283a 35%, #12151f 60%, #4a5068 100%) border-box;
+  display: flex; align-items: center; justify-content: center;
+}
+.leaf-right .face-back::after { /* rear camera cluster */
+  content: ""; position: absolute; top: 14px; right: 14px;
+  width: 30px; height: 30px; border-radius: 9px;
+  background: radial-gradient(circle at 32% 32%, #3a3f55, #12141c);
+  box-shadow: inset 0 0 0 2px #2a2f42, 0 1px 4px rgba(0,0,0,.5);
+}
+/* Apple marks: etched on the back, glowing softly at the centre of the screen */
+.applemark-back { width: 38px; height: 46px; fill: #aeb6c9; opacity: .85; filter: drop-shadow(0 1px 1px rgba(0,0,0,.6)); }
+.applemark-screen {
+  position: absolute; top: 50%; left: 50%; width: 30px; height: 37px;
+  transform: translate(-50%, -50%); fill: rgba(255,255,255,.9);
+  filter: drop-shadow(0 0 10px rgba(255,255,255,.45)); z-index: 1;
+}
+.leaf .screen::before { /* punch-hole camera */
+  content: ""; position: absolute; top: 8px; left: 50%; transform: translateX(-50%);
+  width: 6px; height: 6px; border-radius: 50%; background: rgba(0,0,0,.5); z-index: 2;
+}
+.leaf .screen::after { /* glass sheen */
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(118deg, rgba(255,255,255,.30) 0%, transparent 38%);
+  mix-blend-mode: screen;
+}
+.foldshadow {
+  position: absolute; bottom: 6px; left: 50%; width: 200px; height: 24px;
+  border-radius: 50%; background: radial-gradient(ellipse, rgba(0,0,0,.55), transparent 70%);
+  filter: blur(7px); z-index: -1;
+  transform: translateX(-50%) scaleX(calc(.55 + var(--fold) * .45));
+  opacity: calc(.2 + var(--fold) * .2);
+  transition: transform .32s cubic-bezier(.5,0,.2,1), opacity .32s ease;
+}
+/* while dragging the slider, kill the transition so the phone tracks the thumb 1:1 */
+.foldstage.dragging .leaf-right, .foldstage.dragging .foldshadow { transition: none; }
+
+/* controls */
+.foldctrl { display: flex; align-items: center; gap: .8rem; width: 100%; max-width: 290px; }
+.foldtoggle {
+  font-family: var(--display); font-weight: 600; font-size: .84rem; white-space: nowrap;
+  background: rgba(255,255,255,.06); color: var(--ink-text);
+  border: 1px solid var(--ink-line); border-radius: 10px; padding: .48rem .85rem; cursor: pointer;
+  transition: background .14s, border-color .14s;
+}
+.foldtoggle:hover { background: rgba(255,255,255,.12); border-color: #3a3f52; }
+.foldrange { flex: 1; accent-color: var(--amber); cursor: pointer; height: 6px; }
+.foldhint { font-size: .72rem; color: var(--ink-muted); margin: -.3rem 0 0; letter-spacing: .02em; }
+
+/* ---------- brand rail ---------- */
+.brandrail {
+  display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;
+  margin-top: 1.8rem; padding-top: 1.4rem; border-top: 1px solid var(--ink-line);
+}
+.brandrail .rail-label {
+  font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.16em;
+  color: var(--ink-muted); margin-right: 0.4rem;
+}
+.brandchip {
+  display: inline-flex; align-items: center; gap: 0.45rem;
+  height: 38px; padding: 0 0.85rem; border-radius: 10px;
+  background: rgba(255,255,255,.04); border: 1px solid var(--ink-line);
+  color: var(--ink-text); font-weight: 600; font-size: 0.9rem; letter-spacing: 0.01em;
+  opacity: .72; transition: opacity .15s, transform .15s, border-color .15s;
+}
+.brandchip:hover { opacity: 1; transform: translateY(-1px); border-color: #3a3f52; }
+.brandchip svg { width: 18px; height: 18px; fill: currentColor; }
+.brandchip.lead-apple { opacity: 1; border-color: color-mix(in srgb, var(--amber) 45%, var(--ink-line)); }
+
+/* ==========================================================================
+   QUIZ BAND — promoted, full width, duotone
+   ========================================================================== */
+.quizband {
+  position: relative; overflow: hidden; margin: 1.6rem 0 0.5rem;
+  border-radius: 20px; padding: clamp(1.4rem, 3vw, 2.2rem);
+  background: linear-gradient(120deg, rgba(255,122,26,.14), rgba(139,123,255,.14)), var(--ink-2);
+  border: 1px solid var(--ink-line); color: var(--ink-text);
+  display: flex; align-items: center; justify-content: space-between; gap: 1.4rem; flex-wrap: wrap;
+}
+.quizband::before {
+  content: ""; position: absolute; top: 0; bottom: 0; left: 50%; width: 200%;
+  background: radial-gradient(60% 120% at 50% 0%, rgba(255,255,255,.06), transparent 60%);
+  transform: translateX(-50%); pointer-events: none;
+}
+.quizband .qb-copy { position: relative; }
+.quizband .qb-eyebrow { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.16em; color: var(--amber-soft); font-weight: 600; }
+.quizband h2 { margin: 0.3rem 0 0.2rem; color: var(--ink-text); }
+.quizband p { margin: 0; color: var(--ink-muted); }
+.quizband .btn { position: relative; flex-shrink: 0; }
+
+/* ==========================================================================
+   Cards
+   ========================================================================== */
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin: 1.6rem 0; }
+.card {
+  background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+  padding: 1.2rem 1.3rem; box-shadow: var(--shadow);
+  transition: transform .14s ease, border-color .14s ease;
+}
+.card:hover { transform: translateY(-2px); border-color: color-mix(in srgb, var(--amber) 40%, var(--border)); }
+.card h3 { margin: 0 0 0.4rem; }
+.card h3 a { color: var(--text); text-decoration: none; }
+.card p { margin: 0.3rem 0 0.7rem; font-size: 0.93rem; color: var(--muted); }
+.card a.more { font-size: 0.9rem; font-weight: 600; font-family: var(--display); text-decoration: none; }
+.card.feature { background: linear-gradient(135deg, color-mix(in srgb, var(--amber) 8%, var(--card)), var(--card)); border-color: color-mix(in srgb, var(--amber) 35%, var(--border)); }
+
+/* ==========================================================================
+   Content elements
+   ========================================================================== */
+.tldr {
+  background: color-mix(in srgb, var(--amber) 8%, var(--bg-soft));
+  border: 1px solid color-mix(in srgb, var(--amber) 30%, var(--border));
+  border-left: 3px solid var(--amber);
+  border-radius: 12px; padding: 1rem 1.2rem; margin: 1.3rem 0; font-size: 0.98rem;
+}
+.tldr strong { color: var(--amber); }
+
+table { border-collapse: collapse; width: 100%; margin: 1.3rem 0; font-size: 0.94rem; display: block; overflow-x: auto; border-radius: 12px; }
+th, td { border: 1px solid var(--border); padding: 0.6rem 0.85rem; text-align: left; vertical-align: top; }
+th { background: var(--bg-soft); font-family: var(--display); font-weight: 600; }
+tr:nth-child(even) td { background: color-mix(in srgb, var(--bg-soft) 60%, transparent); }
+
+.buy {
+  display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;
+  font-size: 0.92rem; margin: 0.6rem 0 0.2rem;
+}
+.buylink {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: color-mix(in srgb, var(--amber) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--amber) 40%, var(--border));
+  color: var(--amber); font-weight: 600; text-decoration: none;
+  padding: 0.4rem 0.9rem; border-radius: 10px; font-size: 0.9rem;
+  transition: background .14s;
+}
+.buylink:hover { background: color-mix(in srgb, var(--amber) 20%, transparent); }
+.brandtag { display: inline-flex; align-items: center; gap: 0.4rem; font-weight: 600; color: var(--muted); font-size: 0.85rem; }
+.brandtag svg { width: 15px; height: 15px; fill: currentColor; }
+
+/* product photo figures — drop-in slots for licensed Amazon images */
+.device-photo {
+  margin: 1rem 0; border: 1px solid var(--border); border-radius: 14px;
+  overflow: hidden; background: var(--bg-soft);
+}
+.device-photo img {
+  display: block; width: 100%; height: auto; aspect-ratio: 3 / 2;
+  object-fit: contain; background: #fff;
+}
+.device-photo figcaption {
+  font-size: 0.76rem; color: var(--muted); padding: 0.5rem 0.8rem;
+  border-top: 1px solid var(--border);
+}
+.device-photo.hero-photo { max-width: 320px; margin-inline: auto; }
+
+.notify {
+  background: var(--bg-soft); border: 1px solid var(--border); border-radius: 16px;
+  padding: 1.4rem 1.5rem; margin: 2rem 0; box-shadow: var(--shadow);
+}
+.notify h2 { margin-top: 0; }
+.notify form { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-top: 0.9rem; }
+.notify input[type="email"] {
+  flex: 1 1 220px; padding: 0.7rem 0.95rem; border-radius: 11px; border: 1px solid var(--border);
+  background: var(--bg); color: var(--text); font-size: 1rem; font-family: var(--body);
+}
+.notify input[type="email"]:focus { outline: 2px solid var(--amber); outline-offset: 1px; border-color: var(--amber); }
+
+.faq details { border-bottom: 1px solid var(--border); padding: 0.7rem 0; }
+.faq summary { font-weight: 600; cursor: pointer; font-family: var(--display); }
+.faq summary:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; border-radius: 4px; }
+.faq p { color: var(--muted); font-size: 0.95rem; }
+
+.disclosure { font-size: 0.8rem; color: var(--muted); border-top: 1px dashed var(--border); margin-top: 2.4rem; padding-top: 0.9rem; }
+
+/* homepage news strip */
+.newsstrip {
+  border: 1px solid var(--border); border-radius: 16px; background: var(--bg-soft);
+  padding: 1rem 1.3rem; margin: 1.4rem 0; box-shadow: var(--shadow);
+}
+.newsstrip .ns-head { display: flex; align-items: baseline; gap: 0.8rem; flex-wrap: wrap; }
+.newsstrip .ns-eyebrow {
+  font-family: var(--display); font-size: 0.72rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.14em; color: var(--amber); margin: 0;
+}
+.newsstrip .ns-all { margin-left: auto; font-size: 0.85rem; font-weight: 600; text-decoration: none; }
+.newsstrip ul { list-style: none; margin: 0.5rem 0 0; padding: 0; }
+.newsstrip li { padding: 0.45rem 0; border-bottom: 1px solid var(--border); line-height: 1.4; }
+.newsstrip li:last-child { border-bottom: 0; }
+.newsstrip a.ns-item { color: var(--text); text-decoration: none; font-weight: 500; font-size: 0.95rem; }
+.newsstrip a.ns-item:hover { color: var(--amber); }
+.newsstrip .feedmeta { font-size: 0.76rem; color: var(--muted); margin-left: 0.5rem; }
+
+/* news feed */
+.feedlist { list-style: none; padding: 0; margin: 1rem 0; }
+.feedlist li { padding: 0.65rem 0; border-bottom: 1px solid var(--border); line-height: 1.45; }
+.feedlist a { color: var(--text); text-decoration: none; font-weight: 500; }
+.feedlist a:hover { color: var(--amber); }
+.feedlist .feedmeta { display: block; font-size: 0.78rem; color: var(--muted); margin-top: 0.15rem; }
+.crumbs { font-size: 0.82rem; color: var(--muted); margin-top: 0.4rem; }
+.crumbs a { color: var(--muted); }
+
+footer.site { border-top: 1px solid var(--border); margin-top: 2.6rem; background: var(--bg-soft); }
+footer.site .inner { max-width: var(--max); margin: 0 auto; padding: 1.8rem 1.2rem; font-size: 0.85rem; color: var(--muted); }
+footer.site a { color: var(--muted); }
+
+/* ==========================================================================
+   Quiz page
+   ========================================================================== */
+.quiz fieldset { border: 1px solid var(--border); border-radius: 14px; padding: 1rem 1.2rem; margin: 1.1rem 0; background: var(--bg-soft); }
+.quiz legend { font-weight: 600; padding: 0 0.4rem; font-family: var(--display); }
+.quiz label {
+  display: block; padding: 0.6rem 0.85rem; border: 1px solid var(--border);
+  border-radius: 11px; margin: 0.45rem 0; cursor: pointer; font-size: 0.97rem; transition: border-color .12s, background .12s;
+}
+.quiz label:hover { border-color: var(--amber); background: color-mix(in srgb, var(--amber) 6%, transparent); }
+.quiz label:has(input:checked) { border-color: var(--amber); background: color-mix(in srgb, var(--amber) 10%, transparent); }
+.quiz input[type="radio"] { accent-color: var(--amber); margin-right: 0.55rem; }
+.quiz .result {
+  display: none; border: 1px solid color-mix(in srgb, var(--amber) 40%, var(--border));
+  border-radius: 16px; padding: 1.4rem 1.5rem; margin-top: 1.6rem;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--amber) 10%, var(--bg-soft)), color-mix(in srgb, var(--violet) 8%, var(--bg-soft)));
+  box-shadow: var(--shadow);
+}
+.quiz .result h2 { margin-top: 0; }
+.quiz .error { color: var(--amber); font-weight: 600; display: none; }
+
+/* ==========================================================================
+   Motion / accessibility
+   ========================================================================== */
+:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) {
+  .leaf-right, .foldshadow { transition: none; }
+  html { scroll-behavior: auto; }
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+@media (max-width: 720px) {
+  .hero-grid { grid-template-columns: 1fr; }
+  .foldstage { min-height: 300px; order: -1; }
+  .quizband { flex-direction: column; align-items: flex-start; }
+  .quizband .btn { width: 100%; }
+}
+
+</style>
 <meta property="og:type" content="website">
 <meta property="og:title" content="Foldable News Today — Daily Feed">
 <meta property="og:description" content="The day's foldable phone headlines and videos, in one place. Updated daily.">
