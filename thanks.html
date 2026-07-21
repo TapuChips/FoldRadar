@@ -20,7 +20,27 @@
 <main>
   <h1>You're on the list ✓</h1>
   <p class="lead">One email when Apple announces the foldable iPhone — date, price, pre-order links. Nothing else.</p>
-  <p>While you wait: <a href="/iphone-fold">everything we know so far</a> or <a href="/best-foldable-phones">the best foldables you can buy today</a>.</p>
+  <p style="margin-top:1.4rem"><a class="btn" href="/">← Back to FoldRadar</a></p>
+  <p class="updated">Taking you back automatically in <span id="count">8</span> seconds…</p>
+  <p>Or jump straight to <a href="/iphone-fold">everything we know so far</a> or <a href="/best-foldable-phones">the best foldables you can buy today</a>.</p>
+  <script>
+  (function () {
+    var n = 8, el = document.getElementById("count");
+    var t = setInterval(function () {
+      n--;
+      if (el) el.textContent = n;
+      if (n <= 0) { clearInterval(t); window.location.href = "/"; }
+    }, 1000);
+    // any click or keypress cancels the auto-redirect so nobody gets yanked mid-read
+    ["click", "keydown", "scroll"].forEach(function (ev) {
+      window.addEventListener(ev, function stop() {
+        clearInterval(t);
+        var c = document.getElementById("count");
+        if (c && c.parentElement) c.parentElement.remove();
+      }, { once: true, passive: true });
+    });
+  })();
+  </script>
 </main>
 <footer class="site">
   <div class="inner"><p><strong>FoldRadar</strong> · <a href="/">Home</a></p></div>
