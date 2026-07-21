@@ -102,7 +102,7 @@ def build():
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Foldable News Today — Daily Feed | FoldRadar</title>
-<meta name="description" content="Daily foldable phone news: iPhone Fold rumors, Galaxy Z Fold and Razr coverage from GSMArena, MacRumors, 9to5Google, plus videos from Shane Craig and Average Dad. Updated {updated_human}.">
+<meta name="description" content="Daily foldable phone news: iPhone Fold rumors, Galaxy Z Fold and Razr headlines, plus videos from Shane Craig and Average Dad. Updated {updated_human}.">
 <link rel="canonical" href="https://foldradar.com/news">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="/style.css">
