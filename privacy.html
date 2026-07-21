@@ -464,8 +464,14 @@ footer.site a { color: var(--muted); }
 /* ==========================================================================
    Quiz page
    ========================================================================== */
-.quiz fieldset { border: 1px solid var(--border); border-radius: 14px; padding: 1rem 1.2rem; margin: 1.1rem 0; background: var(--bg-soft); }
-.quiz legend { font-weight: 600; padding: 0 0.4rem; font-family: var(--display); }
+.quiz fieldset {
+  border: 1px solid var(--border); border-radius: 14px;
+  padding: 1rem 1.2rem; margin: 1.1rem 0; background: var(--bg-soft);
+  min-inline-size: 0;   /* let the box shrink on mobile — no horizontal overflow */
+}
+.quiz fieldset::after { content: ""; display: block; clear: both; }
+/* float the legend so the question sits INSIDE the box, not on its top border */
+.quiz legend { float: left; width: 100%; margin: 0 0 0.7rem; padding: 0; font-weight: 600; font-family: var(--display); }
 .quiz label {
   display: block; padding: 0.6rem 0.85rem; border: 1px solid var(--border);
   border-radius: 11px; margin: 0.45rem 0; cursor: pointer; font-size: 0.97rem; transition: border-color .12s, background .12s;
