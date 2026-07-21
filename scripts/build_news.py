@@ -200,6 +200,18 @@ def build():
     else:
         print("!! NEWS-STRIP markers not found in index.html — strip skipped")
 
+    # --- sitemap: bump /news lastmod to today so crawlers see the daily change ---
+    sm_path = ROOT / "sitemap.xml"
+    sm = sm_path.read_text(encoding="utf-8")
+    new_sm = re.sub(
+        r"(<loc>https://foldradar\.com/news</loc>\s*<lastmod>)[0-9-]+(</lastmod>)",
+        rf"\g<1>{today.isoformat()}\g<2>",
+        sm,
+    )
+    if new_sm != sm:
+        sm_path.write_text(new_sm, encoding="utf-8", newline="\n")
+        print("sitemap.xml /news lastmod bumped")
+
 
 if __name__ == "__main__":
     build()
