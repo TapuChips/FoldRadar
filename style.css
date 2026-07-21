@@ -222,23 +222,29 @@ a { color: var(--amber); text-decoration-thickness: 1px; text-underline-offset: 
 .leaf-left .face { border-radius: 16px 5px 5px 16px; }
 .leaf-right { transform-origin: left center; transform: rotateY(calc((var(--fold) - 1) * 170deg)); transition: transform .32s cubic-bezier(.5,0,.2,1); }
 .leaf-right .face-front { border-radius: 5px 16px 16px 5px; }
+/* outer face = a COVER DISPLAY, so a closed phone shows a screen (not a bare back) */
 .leaf-right .face-back {
   position: absolute; inset: 0; border-radius: 5px 16px 16px 5px;
   transform: rotateY(180deg); backface-visibility: hidden;
   border: 3px solid transparent;
   background:
-    linear-gradient(150deg, #232838, #10131d 55%, #1a1e2c) padding-box,
+    linear-gradient(#0b0d14, #0b0d14) padding-box,
     linear-gradient(155deg, #6b7288 0%, #23283a 35%, #12151f 60%, #4a5068 100%) border-box;
-  display: flex; align-items: center; justify-content: center;
+  display: flex; align-items: center; justify-content: center; overflow: hidden;
 }
-.leaf-right .face-back::after { /* rear camera cluster */
-  content: ""; position: absolute; top: 14px; right: 14px;
-  width: 30px; height: 30px; border-radius: 9px;
-  background: radial-gradient(circle at 32% 32%, #3a3f55, #12141c);
-  box-shadow: inset 0 0 0 2px #2a2f42, 0 1px 4px rgba(0,0,0,.5);
+.leaf-right .face-back::before { /* the cover screen wallpaper */
+  content: ""; position: absolute; inset: 5px; border-radius: 7px;
+  background:
+    radial-gradient(120% 90% at 20% -10%, rgba(255,140,60,.5) 0%, transparent 52%),
+    radial-gradient(140% 110% at 85% 110%, rgba(108,92,255,.6) 0%, transparent 58%),
+    linear-gradient(178deg, #150d28 0%, #0a0816 100%);
 }
-/* Apple marks: etched on the back, glowing softly at the centre of the screen */
-.applemark-back { width: 38px; height: 46px; fill: #aeb6c9; opacity: .85; filter: drop-shadow(0 1px 1px rgba(0,0,0,.6)); }
+.leaf-right .face-back::after { /* cover-screen punch-hole camera */
+  content: ""; position: absolute; top: 11px; left: 50%; transform: translateX(-50%);
+  width: 6px; height: 6px; border-radius: 50%; background: rgba(0,0,0,.55); z-index: 2;
+}
+/* Apple marks: glowing on the inner screen AND on the cover screen */
+.applemark-back { position: relative; z-index: 1; width: 30px; height: 37px; fill: rgba(255,255,255,.92); filter: drop-shadow(0 0 9px rgba(255,255,255,.4)); }
 .applemark-screen {
   position: absolute; top: 50%; left: 50%; width: 30px; height: 37px;
   transform: translate(-50%, -50%); fill: rgba(255,255,255,.9);
@@ -423,6 +429,19 @@ tr:nth-child(even) td { background: color-mix(in srgb, var(--bg-soft) 60%, trans
 .feedlist a { color: var(--text); text-decoration: none; font-weight: 500; }
 .feedlist a:hover { color: var(--amber); }
 .feedlist .feedmeta { display: block; font-size: 0.78rem; color: var(--muted); margin-top: 0.15rem; }
+
+/* news digest — original summaries, credited, each with a CTA */
+.digest { list-style: none; padding: 0; margin: 1.4rem 0; }
+.digest-item { padding: 1rem 0; border-bottom: 1px solid var(--border); }
+.digest-item:first-child { padding-top: 0; }
+.digest-text { margin: 0 0 0.5rem; font-size: 1.05rem; line-height: 1.5; color: var(--text); }
+.digest-meta { margin: 0; display: flex; gap: 0.9rem; flex-wrap: wrap; align-items: center; font-size: 0.86rem; }
+.digest-meta .via {
+  color: var(--muted); font-weight: 600;
+  padding: 0.1rem 0.55rem; border: 1px solid var(--border); border-radius: 999px;
+}
+.digest-cta { font-family: var(--display); font-weight: 600; color: var(--amber); text-decoration: none; }
+.digest-cta:hover { text-decoration: underline; }
 .crumbs { font-size: 0.82rem; color: var(--muted); margin-top: 0.4rem; }
 .crumbs a { color: var(--muted); }
 

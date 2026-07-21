@@ -2,11 +2,18 @@
 """FoldRadar daily news builder.
 
 Pulls RSS/Atom feeds from foldable-focused creators and phone-news sites,
-filters for foldable topics, and regenerates news.html (headlines + links
-only — full content stays with the sources). Run daily by GitHub Actions.
+then rewrites each item into ONE original sentence in FoldRadar's voice and
+publishes it on /news. Sources are credited by name (no outbound links) so
+readers stay on-site; every item carries a CTA into our own coverage.
+
+Rewriting uses the OpenAI API when OPENAI_API_KEY is set (add it as a GitHub
+Actions secret for the daily run). Without a key it falls back to the headline
+text so the page still builds. Run daily by GitHub Actions.
 """
 import datetime
 import html
+import json
+import os
 import re
 import urllib.request
 import xml.etree.ElementTree as ET
@@ -30,11 +37,16 @@ KEYWORDS = re.compile(
     r"fold|flip|razr|hinge|flex window|book-style|clamshell|tri-fold|trifold",
     re.IGNORECASE,
 )
+NS = {"atom": "http://www.w3.org/2005/Atom", "media": "http://search.yahoo.com/mrss/"}
 
-NS = {
-    "atom": "http://www.w3.org/2005/Atom",
-    "media": "http://search.yahoo.com/mrss/",
-}
+# CTAs rotated across items so every entry drives into our own pages
+CTAS = [
+    ("/iphone-fold", "Read the iPhone Fold tracker"),
+    ("/which-foldable", "Which foldable fits you?"),
+    ("/best-foldable-phones", "See the best foldables"),
+    ("/news#launch-alert", "Get the launch alert"),
+    ("/iphone-fold-vs-galaxy-z-fold", "iPhone Fold vs Z Fold"),
+]
 
 
 def fetch(url):
@@ -44,35 +56,69 @@ def fetch(url):
 
 
 def parse_feed(label, url, kind, filtered):
-    """Return list of dicts: title, link, date (datetime), source, kind."""
     items = []
     try:
         root = ET.fromstring(fetch(url))
     except Exception as e:
         print(f"!! {label}: {e}")
         return items
-
     if root.tag.endswith("feed"):  # Atom (YouTube)
         for entry in root.findall("atom:entry", NS):
             title = (entry.findtext("atom:title", "", NS) or "").strip()
-            link_el = entry.find("atom:link[@rel='alternate']", NS)
-            link = link_el.get("href") if link_el is not None else ""
             date = (entry.findtext("atom:published", "", NS) or "")[:10]
-            items.append({"title": title, "link": link, "date": date, "source": label, "kind": kind})
+            items.append({"title": title, "date": date, "source": label, "kind": kind})
     else:  # RSS
         for it in root.iter("item"):
             title = (it.findtext("title") or "").strip()
-            link = (it.findtext("link") or "").strip()
             pub = it.findtext("pubDate") or ""
             try:
                 date = datetime.datetime.strptime(pub[5:16], "%d %b %Y").strftime("%Y-%m-%d")
             except ValueError:
                 date = ""
-            items.append({"title": title, "link": link, "date": date, "source": label, "kind": kind})
-
+            items.append({"title": title, "date": date, "source": label, "kind": kind})
     if filtered:
         items = [i for i in items if KEYWORDS.search(i["title"])]
     return items[:8]
+
+
+def summarize(items):
+    """Rewrite each headline as one original sentence. OpenAI if keyed, else fallback."""
+    key = os.environ.get("OPENAI_API_KEY", "").strip()
+    if not key or not items:
+        return [i["title"] for i in items]
+    listing = "\n".join(f'{n+1}. "{i["title"]}" (source: {i["source"]})' for n, i in enumerate(items))
+    prompt = (
+        "You are FoldRadar, an independent foldable-phone news site. For each headline "
+        "below, write ONE original sentence (max 28 words) summarizing the story for our "
+        "readers. Use your own wording — do NOT copy the headline's phrasing. Stay factual "
+        "and neutral; never invent details the headline does not state. Do not mention the "
+        'source in the sentence. Return ONLY JSON: {"summaries": ["...", ...]} in the same '
+        "order.\n\n" + listing
+    )
+    try:
+        body = json.dumps({
+            "model": "gpt-4o-mini",
+            "messages": [{"role": "user", "content": prompt}],
+            "temperature": 0.6,
+            "response_format": {"type": "json_object"},
+        }).encode()
+        req = urllib.request.Request(
+            "https://api.openai.com/v1/chat/completions", data=body,
+            headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"},
+        )
+        with urllib.request.urlopen(req, timeout=60) as r:
+            content = json.loads(r.read())["choices"][0]["message"]["content"]
+        out = json.loads(content).get("summaries", [])
+        # pad/truncate to match, fall back to title on any gap
+        result = []
+        for n, i in enumerate(items):
+            s = out[n].strip() if n < len(out) and isinstance(out[n], str) and out[n].strip() else i["title"]
+            result.append(s)
+        print(f"   rewrote {len(items)} items via OpenAI")
+        return result
+    except Exception as e:
+        print(f"   (OpenAI rewrite failed: {str(e)[:90]} — using headlines)")
+        return [i["title"] for i in items]
 
 
 def build():
@@ -83,42 +129,50 @@ def build():
         all_items.extend(got)
 
     all_items.sort(key=lambda i: i["date"], reverse=True)
-    videos = [i for i in all_items if i["kind"] == "video"][:10]
-    news = [i for i in all_items if i["kind"] == "news"][:14]
+    digest = all_items[:16]
+    summaries = summarize(digest)
+    for it, s in zip(digest, summaries):
+        it["summary"] = s
+
     today = datetime.date.today()
     updated_human = today.strftime("%B %d, %Y")
 
-    def li(item):
-        t = html.escape(item["title"])
-        u = html.escape(item["link"])
-        d = item["date"] or ""
-        return (f'    <li><a href="{u}" rel="noopener" target="_blank">{t}</a>'
-                f'<span class="feedmeta">{html.escape(item["source"])}{" · " + d if d else ""}</span></li>')
+    def card(item, idx):
+        s = html.escape(item["summary"])
+        src = html.escape(item["source"])
+        cta_url, cta_label = CTAS[idx % len(CTAS)]
+        return (
+            '    <li class="digest-item">\n'
+            f'      <p class="digest-text">{s}</p>\n'
+            f'      <p class="digest-meta"><span class="via">via {src}</span>'
+            f'<a class="digest-cta" href="{cta_url}">{html.escape(cta_label)} →</a></p>\n'
+            '    </li>'
+        )
 
-    videos_html = "\n".join(li(i) for i in videos) or "    <li>No new videos today — check back tomorrow.</li>"
-    news_html = "\n".join(li(i) for i in news) or "    <li>No foldable headlines today — check back tomorrow.</li>"
+    digest_html = "\n".join(card(it, n) for n, it in enumerate(digest)) \
+        or '    <li class="digest-item"><p class="digest-text">No fresh foldable stories today — check back tomorrow.</p></li>'
 
     page = f"""<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Foldable News Today — Daily Feed | FoldRadar</title>
-<meta name="description" content="Daily foldable phone news: iPhone Fold rumors, Galaxy Z Fold and Razr headlines, plus videos from Shane Craig and Average Dad. Updated {updated_human}.">
+<title>Foldable News Today — Daily Digest | FoldRadar</title>
+<meta name="description" content="Today's foldable phone news in FoldRadar's words: iPhone Fold rumors, Galaxy Z Fold and Razr, summarized daily and credited to the source. Updated {updated_human}.">
 <link rel="canonical" href="https://foldradar.com/news">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="/fonts/Inter-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/fonts/SpaceGrotesk-700.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/style.css">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Foldable News Today — Daily Feed">
-<meta property="og:description" content="The day's foldable phone headlines and videos, in one place. Updated daily.">
+<meta property="og:title" content="Foldable News Today — Daily Digest">
+<meta property="og:description" content="The day's foldable phone stories, summarized in FoldRadar's words. Updated daily.">
 <meta property="og:url" content="https://foldradar.com/news">
 <script type="application/ld+json">
 {{
   "@context": "https://schema.org",
   "@type": "WebPage",
-  "name": "Foldable news today — daily feed",
+  "name": "Foldable news today — daily digest",
   "dateModified": "{today.isoformat()}",
   "mainEntityOfPage": "https://foldradar.com/news",
   "publisher": {{ "@id": "https://foldradar.com/#org" }}
@@ -141,16 +195,10 @@ def build():
   <p class="crumbs"><a href="/">FoldRadar</a> › News</p>
   <h1>Foldable news today</h1>
   <p class="updated">Auto-updated daily · Last refresh: {updated_human}</p>
-  <p class="lead">The day's foldable headlines and videos in one place — iPhone Fold rumors, Galaxy Z Fold, Razr, and everything with a hinge. Curated from the sources we trust; every link goes to the original.</p>
+  <p class="lead">The day's foldable stories — iPhone Fold rumors, Galaxy Z Fold, Razr and everything with a hinge — summarized in our own words and credited to the reporters who broke them.</p>
 
-  <h2>Latest videos</h2>
-  <ul class="feedlist">
-{videos_html}
-  </ul>
-
-  <h2>Latest headlines</h2>
-  <ul class="feedlist">
-{news_html}
+  <ul class="digest">
+{digest_html}
   </ul>
 
   <div class="notify" id="launch-alert">
@@ -165,7 +213,7 @@ def build():
     </form>
   </div>
 
-  <p class="disclosure">Headlines and video titles belong to their publishers — GSMArena, MacRumors, 9to5Google, Android Authority, Shane Craig and Average Dad — and link to the original source. FoldRadar aggregates titles only.</p>
+  <p class="disclosure">Summaries are FoldRadar's own, written from public reporting and credited to the outlet or creator named — GSMArena, MacRumors, 9to5Google, Android Authority, Shane Craig and Average Dad. We don't republish their text; we point you to our own coverage.</p>
 </main>
 <footer class="site">
   <div class="inner">
@@ -178,19 +226,19 @@ def build():
 </html>
 """
     css = (ROOT / "style.css").read_text(encoding="utf-8")
-    page = inline_html(page, css)   # inline CSS so /news paints styled on first frame
+    page = inline_html(page, css)
     (ROOT / "news.html").write_text(page, encoding="utf-8", newline="\n")
-    print(f"news.html written: {len(videos)} videos, {len(news)} headlines")
+    print(f"news.html written: {len(digest)} digest items")
 
-    # --- homepage "Today in foldables" strip: top 3 newest items overall ---
-    top3 = all_items[:3]
+    # --- homepage "Today in foldables" strip: top 3 summaries, on-site ---
+    top3 = digest[:3]
     strip_lines = []
     for item in top3:
-        t = html.escape(item["title"])
-        u = html.escape(item["link"])
+        s = html.escape(item.get("summary", item["title"]))
+        src = html.escape(item["source"])
         strip_lines.append(
-            f'      <li><a class="ns-item" href="{u}" rel="noopener" target="_blank">{t}</a>'
-            f'<span class="feedmeta">{html.escape(item["source"])}</span></li>'
+            f'      <li><a class="ns-item" href="/news">{s}</a>'
+            f'<span class="feedmeta">via {src}</span></li>'
         )
     strip = "\n".join(strip_lines) or '      <li><a class="ns-item" href="/news">See today\'s foldable news →</a></li>'
 
@@ -206,13 +254,12 @@ def build():
     else:
         print("!! NEWS-STRIP markers not found in index.html — strip skipped")
 
-    # --- sitemap: bump /news lastmod to today so crawlers see the daily change ---
+    # --- sitemap: bump /news lastmod so crawlers see the daily change ---
     sm_path = ROOT / "sitemap.xml"
     sm = sm_path.read_text(encoding="utf-8")
     new_sm = re.sub(
         r"(<loc>https://foldradar\.com/news</loc>\s*<lastmod>)[0-9-]+(</lastmod>)",
-        rf"\g<1>{today.isoformat()}\g<2>",
-        sm,
+        rf"\g<1>{today.isoformat()}\g<2>", sm,
     )
     if new_sm != sm:
         sm_path.write_text(new_sm, encoding="utf-8", newline="\n")
