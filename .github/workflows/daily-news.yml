@@ -20,6 +20,9 @@ jobs:
           python-version: "3.12"
 
       - name: Rebuild news.html from feeds
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: python scripts/build_news.py
 
       - name: Commit and push if changed

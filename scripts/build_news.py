@@ -6,9 +6,10 @@ then rewrites each item into ONE original sentence in FoldRadar's voice and
 publishes it on /news. Sources are credited by name (no outbound links) so
 readers stay on-site; every item carries a CTA into our own coverage.
 
-Rewriting uses the OpenAI API when OPENAI_API_KEY is set (add it as a GitHub
-Actions secret for the daily run). Without a key it falls back to the headline
-text so the page still builds. Run daily by GitHub Actions.
+Rewriting prefers the Gemini API (free tier) via GEMINI_API_KEY, falls back to
+OpenAI via OPENAI_API_KEY, and if neither is set uses the headline text so the
+page still builds. Add GEMINI_API_KEY as a GitHub Actions secret for the daily
+run. Run daily by GitHub Actions.
 """
 import datetime
 import html
@@ -81,13 +82,9 @@ def parse_feed(label, url, kind, filtered):
     return items[:8]
 
 
-def summarize(items):
-    """Rewrite each headline as one original sentence. OpenAI if keyed, else fallback."""
-    key = os.environ.get("OPENAI_API_KEY", "").strip()
-    if not key or not items:
-        return [i["title"] for i in items]
+def _prompt(items):
     listing = "\n".join(f'{n+1}. "{i["title"]}" (source: {i["source"]})' for n, i in enumerate(items))
-    prompt = (
+    return (
         "You are FoldRadar, an independent foldable-phone news site. For each headline "
         "below, write ONE original sentence (max 28 words) summarizing the story for our "
         "readers. Use your own wording — do NOT copy the headline's phrasing. Stay factual "
@@ -95,29 +92,57 @@ def summarize(items):
         'source in the sentence. Return ONLY JSON: {"summaries": ["...", ...]} in the same '
         "order.\n\n" + listing
     )
+
+
+def _gemini(prompt, key):
+    model = os.environ.get("GEMINI_MODEL", "gemini-flash-latest")
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={key}"
+    body = json.dumps({
+        "contents": [{"parts": [{"text": prompt}]}],
+        "generationConfig": {"temperature": 0.6, "responseMimeType": "application/json"},
+    }).encode()
+    req = urllib.request.Request(url, data=body, headers={"Content-Type": "application/json"})
+    with urllib.request.urlopen(req, timeout=60) as r:
+        data = json.loads(r.read())
+    return data["candidates"][0]["content"]["parts"][0]["text"]
+
+
+def _openai(prompt, key):
+    body = json.dumps({
+        "model": "gpt-4o-mini",
+        "messages": [{"role": "user", "content": prompt}],
+        "temperature": 0.6,
+        "response_format": {"type": "json_object"},
+    }).encode()
+    req = urllib.request.Request(
+        "https://api.openai.com/v1/chat/completions", data=body,
+        headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"},
+    )
+    with urllib.request.urlopen(req, timeout=60) as r:
+        return json.loads(r.read())["choices"][0]["message"]["content"]
+
+
+def summarize(items):
+    """Rewrite each headline as one original sentence. Prefers Gemini (free tier),
+    then OpenAI; falls back to the raw headline if no key is set or on error."""
+    if not items:
+        return []
+    gkey = os.environ.get("GEMINI_API_KEY", "").strip()
+    okey = os.environ.get("OPENAI_API_KEY", "").strip()
+    if not gkey and not okey:
+        return [i["title"] for i in items]
+    provider = "Gemini" if gkey else "OpenAI"
     try:
-        body = json.dumps({
-            "model": "gpt-4o-mini",
-            "messages": [{"role": "user", "content": prompt}],
-            "temperature": 0.6,
-            "response_format": {"type": "json_object"},
-        }).encode()
-        req = urllib.request.Request(
-            "https://api.openai.com/v1/chat/completions", data=body,
-            headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"},
-        )
-        with urllib.request.urlopen(req, timeout=60) as r:
-            content = json.loads(r.read())["choices"][0]["message"]["content"]
+        content = _gemini(_prompt(items), gkey) if gkey else _openai(_prompt(items), okey)
         out = json.loads(content).get("summaries", [])
-        # pad/truncate to match, fall back to title on any gap
         result = []
         for n, i in enumerate(items):
             s = out[n].strip() if n < len(out) and isinstance(out[n], str) and out[n].strip() else i["title"]
             result.append(s)
-        print(f"   rewrote {len(items)} items via OpenAI")
+        print(f"   rewrote {len(items)} items via {provider}")
         return result
     except Exception as e:
-        print(f"   (OpenAI rewrite failed: {str(e)[:90]} — using headlines)")
+        print(f"   ({provider} rewrite failed: {str(e)[:90]} — using headlines)")
         return [i["title"] for i in items]
 
 
