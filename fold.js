@@ -1,7 +1,7 @@
 /* FoldRadar — interactive foldable.
-   Slider drives --fold (0 closed .. 1 open). Drag anywhere on the stage to
-   rotate the phone in 3D; tap it (no drag) to fold/unfold. Auto-demos once,
-   hands control to the user on first interaction. */
+   Slider drives --fold (0 closed .. 1 open). Drag anywhere on the stage to spin
+   the phone freely in 3D (full 360° horizontally); flick and let go to keep it
+   spinning with momentum. Tap it (no drag) to fold/unfold. Auto-demos once. */
 (function () {
   var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -42,16 +42,23 @@
       toggle.addEventListener('click', function () { handOff(); apply(val < 50 ? 100 : 0); });
     }
 
-    /* --- 3D drag rotation --- */
+    /* --- free 360° drag rotation with flick momentum --- */
     if (view && phone) {
-      var rx = 6, ry = -16, dragging = false, moved = false, px = 0, py = 0;
+      var rx = 6, ry = -16, vry = 0, dragging = false, moved = false, px = 0, py = 0, spinRaf = null;
       function applyRot() {
         phone.style.setProperty('--rotx', rx.toFixed(1) + 'deg');
         phone.style.setProperty('--roty', ry.toFixed(1) + 'deg');
       }
+      function stopSpin() { if (spinRaf) { cancelAnimationFrame(spinRaf); spinRaf = null; } }
+      function spin() {
+        ry += vry;
+        vry *= 0.94;                       // friction
+        applyRot();
+        spinRaf = Math.abs(vry) > 0.06 ? requestAnimationFrame(spin) : null;
+      }
       view.addEventListener('pointerdown', function (e) {
-        dragging = true; moved = false; px = e.clientX; py = e.clientY;
-        view.classList.add('grabbing');
+        dragging = true; moved = false; px = e.clientX; py = e.clientY; vry = 0;
+        stopSpin(); view.classList.add('grabbing');
         try { view.setPointerCapture(e.pointerId); } catch (err) {}
         handOff();
       });
@@ -59,22 +66,22 @@
         if (!dragging) return;
         var dx = e.clientX - px, dy = e.clientY - py;
         if (Math.abs(dx) + Math.abs(dy) > 4) moved = true;
-        ry = Math.max(-75, Math.min(75, ry + dx * 0.45));
-        rx = Math.max(-35, Math.min(45, rx - dy * 0.35));
+        ry += dx * 0.5;                                    // no clamp → full 360°+
+        rx = Math.max(-90, Math.min(90, rx - dy * 0.4));   // vertical tilt, capped
+        vry = dx * 0.5;                                    // store velocity for momentum
         px = e.clientX; py = e.clientY;
         applyRot();
       });
       ['pointerup', 'pointercancel'].forEach(function (ev) {
         view.addEventListener(ev, function () {
-          dragging = false;
-          view.classList.remove('grabbing');
+          if (!dragging) return;
+          dragging = false; view.classList.remove('grabbing');
+          if (Math.abs(vry) > 0.5) spin();                 // flick to keep spinning
         });
       });
-      /* tap without dragging = fold/unfold */
       view.addEventListener('click', function () {
         if (moved) { moved = false; return; }
-        handOff();
-        apply(val < 50 ? 100 : 0);
+        handOff(); apply(val < 50 ? 100 : 0);
       });
     }
 

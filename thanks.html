@@ -257,6 +257,22 @@ a { color: var(--amber); text-decoration-thickness: 1px; text-underline-offset: 
 }
 /* Apple marks: glowing on the inner screen AND on the cover screen */
 .applemark-back { position: relative; z-index: 1; width: 30px; height: 37px; fill: rgba(255,255,255,.92); filter: drop-shadow(0 0 9px rgba(255,255,255,.4)); }
+
+/* left half gets a titanium rear panel so the device looks solid when spun 360° */
+.leaf-left .face-back {
+  position: absolute; inset: 0; border-radius: 16px 5px 5px 16px;
+  transform: rotateY(180deg); backface-visibility: hidden;
+  border: 3px solid transparent;
+  background:
+    linear-gradient(150deg, #232838, #10131d 55%, #1a1e2c) padding-box,
+    linear-gradient(155deg, #6b7288 0%, #23283a 35%, #12151f 60%, #4a5068 100%) border-box;
+}
+.leaf-left .face-back::after { /* rear camera cluster */
+  content: ""; position: absolute; top: 14px; left: 14px;
+  width: 30px; height: 30px; border-radius: 9px;
+  background: radial-gradient(circle at 32% 32%, #3a3f55, #12141c);
+  box-shadow: inset 0 0 0 2px #2a2f42, 0 1px 4px rgba(0,0,0,.5);
+}
 .applemark-screen {
   position: absolute; top: 50%; left: 50%; width: 30px; height: 37px;
   transform: translate(-50%, -50%); fill: rgba(255,255,255,.9);
