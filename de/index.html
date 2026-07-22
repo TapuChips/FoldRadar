@@ -214,16 +214,17 @@ a { color: var(--amber); text-decoration-thickness: 1px; text-underline-offset: 
   transform: rotateX(var(--rotx, 6deg)) rotateY(var(--roty, -16deg));
   will-change: transform;
 }
-.leaf { flex: 0 0 auto; width: 132px; height: 250px; position: relative; transform-style: preserve-3d; }
-/* titanium frame: gradient border via double background */
+.leaf { --t: 10px; flex: 0 0 auto; width: 132px; height: 250px; position: relative; transform-style: preserve-3d; }
+/* slate-blue titanium frame (matches the leaked concept), pushed forward for thickness */
 .leaf .face {
   position: absolute; inset: 0; border-radius: 10px;
   border: 3px solid transparent;
   background:
-    linear-gradient(#0b0d14, #0b0d14) padding-box,
-    linear-gradient(155deg, #6b7288 0%, #23283a 35%, #12151f 60%, #4a5068 100%) border-box;
+    linear-gradient(#0c1119, #0c1119) padding-box,
+    linear-gradient(155deg, #8a97ad 0%, #2d3748 38%, #161d29 62%, #4c576b 100%) border-box;
   box-shadow: inset 0 0 0 1px rgba(255,255,255,.05);
   backface-visibility: hidden; overflow: hidden;
+  transform: translateZ(calc(var(--t) / 2));
 }
 /* ONE wallpaper: identical aurora on both halves = a single continuous screen */
 .leaf .screen {
@@ -237,44 +238,61 @@ a { color: var(--amber); text-decoration-thickness: 1px; text-underline-offset: 
 .leaf-left .face { border-radius: 16px 5px 5px 16px; }
 .leaf-right { transform-origin: left center; transform: rotateY(calc((var(--fold) - 1) * 170deg)); transition: transform .32s cubic-bezier(.5,0,.2,1); }
 .leaf-right .face-front { border-radius: 5px 16px 16px 5px; }
-/* outer face = a COVER DISPLAY, so a closed phone shows a screen (not a bare back) */
+
+/* --- device thickness: four side walls per leaf form a real slab when spun --- */
+.leaf .ed { position: absolute; background: linear-gradient(90deg, #3c4658, #12161f 55%, #2a3140); }
+.leaf .ed.t { top: 0; left: 0; width: 100%; height: var(--t); transform: translateY(calc(var(--t) / -2)) rotateX(90deg); }
+.leaf .ed.b { bottom: 0; left: 0; width: 100%; height: var(--t); background: linear-gradient(90deg, #2a3140, #090c12 55%, #222834); transform: translateY(calc(var(--t) / 2)) rotateX(90deg); }
+.leaf .ed.l { top: 0; left: 0; width: var(--t); height: 100%; transform: translateX(calc(var(--t) / -2)) rotateY(90deg); }
+.leaf .ed.r { top: 0; right: 0; width: var(--t); height: 100%; transform: translateX(calc(var(--t) / 2)) rotateY(90deg); }
+
+/* RIGHT outer face = dark slate cover panel (screen-off look) */
 .leaf-right .face-back {
   position: absolute; inset: 0; border-radius: 5px 16px 16px 5px;
-  transform: rotateY(180deg); backface-visibility: hidden;
+  transform: rotateY(180deg) translateZ(calc(var(--t) / 2)); backface-visibility: hidden;
   border: 3px solid transparent;
   background:
-    linear-gradient(#0b0d14, #0b0d14) padding-box,
-    linear-gradient(155deg, #6b7288 0%, #23283a 35%, #12151f 60%, #4a5068 100%) border-box;
-  display: flex; align-items: center; justify-content: center; overflow: hidden;
+    linear-gradient(150deg, #1b2430, #0a0e15 60%, #161d28) padding-box,
+    linear-gradient(155deg, #8a97ad 0%, #2d3748 38%, #161d29 62%, #4c576b 100%) border-box;
+  overflow: hidden;
 }
-.leaf-right .face-back::before { /* the cover screen wallpaper */
+.leaf-right .face-back::before { /* dark glass panel */
   content: ""; position: absolute; inset: 5px; border-radius: 7px;
   background:
-    radial-gradient(120% 90% at 20% -10%, rgba(255,140,60,.5) 0%, transparent 52%),
-    radial-gradient(140% 110% at 85% 110%, rgba(108,92,255,.6) 0%, transparent 58%),
-    linear-gradient(178deg, #150d28 0%, #0a0816 100%);
+    radial-gradient(120% 90% at 25% -10%, rgba(120,150,200,.16) 0%, transparent 55%),
+    linear-gradient(160deg, #1a232f 0%, #0a0e15 100%);
 }
-.leaf-right .face-back::after { /* cover-screen punch-hole camera */
+.leaf-right .face-back::after { /* front-camera dot */
   content: ""; position: absolute; top: 11px; left: 50%; transform: translateX(-50%);
-  width: 6px; height: 6px; border-radius: 50%; background: rgba(0,0,0,.55); z-index: 2;
+  width: 6px; height: 6px; border-radius: 50%; background: rgba(0,0,0,.6); z-index: 2;
 }
-/* Apple marks: glowing on the inner screen AND on the cover screen */
-.applemark-back { position: relative; z-index: 1; width: 30px; height: 37px; fill: rgba(255,255,255,.92); filter: drop-shadow(0 0 9px rgba(255,255,255,.4)); }
 
-/* left half gets a titanium rear panel so the device looks solid when spun 360° */
+/* LEFT outer face = slate rear with the two-lens camera pill + Apple logo (per the leak) */
 .leaf-left .face-back {
   position: absolute; inset: 0; border-radius: 16px 5px 5px 16px;
-  transform: rotateY(180deg); backface-visibility: hidden;
+  transform: rotateY(180deg) translateZ(calc(var(--t) / 2)); backface-visibility: hidden;
   border: 3px solid transparent;
   background:
-    linear-gradient(150deg, #232838, #10131d 55%, #1a1e2c) padding-box,
-    linear-gradient(155deg, #6b7288 0%, #23283a 35%, #12151f 60%, #4a5068 100%) border-box;
+    linear-gradient(150deg, #2d3748, #151b26 55%, #26303f) padding-box,
+    linear-gradient(155deg, #8a97ad 0%, #2d3748 38%, #161d29 62%, #4c576b 100%) border-box;
+  display: flex; align-items: center; justify-content: center; overflow: hidden;
 }
-.leaf-left .face-back::after { /* rear camera cluster */
-  content: ""; position: absolute; top: 14px; left: 14px;
-  width: 30px; height: 30px; border-radius: 9px;
-  background: radial-gradient(circle at 32% 32%, #3a3f55, #12141c);
-  box-shadow: inset 0 0 0 2px #2a2f42, 0 1px 4px rgba(0,0,0,.5);
+.leaf-left .face-back .cam { /* horizontal two-lens camera pill, top corner */
+  position: absolute; top: 12px; left: 12px;
+  display: flex; align-items: center; gap: 5px; padding: 0 7px;
+  width: 52px; height: 25px; border-radius: 13px;
+  background: linear-gradient(155deg, #212a38, #0b0f16);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.06), 0 1px 4px rgba(0,0,0,.55);
+}
+.leaf-left .face-back .cam i {
+  width: 14px; height: 14px; border-radius: 50%;
+  background: radial-gradient(circle at 34% 30%, #6b7488, #0a0d14 68%);
+  box-shadow: inset 0 0 0 1.5px #2b3242;
+}
+/* Apple logo on the slate back — un-mirror it (it sits inside a rotateY(180) face) */
+.applemark-back {
+  position: relative; z-index: 1; width: 30px; height: 37px; transform: scaleX(-1);
+  fill: rgba(233,238,246,.9); filter: drop-shadow(0 1px 2px rgba(0,0,0,.5));
 }
 .applemark-screen {
   position: absolute; top: 50%; left: 50%; width: 30px; height: 37px;
@@ -567,10 +585,10 @@ footer.site a { color: var(--muted); }
       <div class="foldstage" data-fold role="group" aria-label="Interaktives Foldable — mit dem Regler auf- und zuklappen">
         <div class="foldview">
           <div class="foldphone">
-            <div class="leaf leaf-left"><div class="face"><div class="screen"><svg class="applemark-screen" viewBox="0 0 384 512" aria-hidden="true"><path d="M318.7 268c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-92.6zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg></div></div><div class="face-back"></div></div>
+            <div class="leaf leaf-left"><div class="face"><div class="screen"><svg class="applemark-screen" viewBox="0 0 384 512" aria-hidden="true"><path d="M318.7 268c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-92.6zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg></div></div><div class="face-back"><span class="cam"><i></i><i></i></span><svg class="applemark-back" viewBox="0 0 384 512" aria-hidden="true"><path d="M318.7 268c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-92.6zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg></div><i class="ed t"></i><i class="ed b"></i><i class="ed l"></i><i class="ed r"></i></div>
             <div class="leaf leaf-right">
               <div class="face face-front"><div class="screen"></div></div>
-              <div class="face-back"><svg class="applemark-back" viewBox="0 0 384 512" aria-hidden="true"><path d="M318.7 268c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-92.6zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg></div>
+              <div class="face-back"></div><i class="ed t"></i><i class="ed b"></i><i class="ed l"></i><i class="ed r"></i>
             </div>
           </div>
           <div class="foldshadow"></div>
