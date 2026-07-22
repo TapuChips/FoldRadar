@@ -235,7 +235,7 @@ a { color: var(--amber); text-decoration-thickness: 1px; text-underline-offset: 
     linear-gradient(178deg, #1b1030 0%, #0d0a1c 100%);
 }
 .leaf-left .face { border-radius: 16px 5px 5px 16px; }
-.leaf-right { transform-origin: left center; transform: rotateY(calc((var(--fold) - 1) * 170deg)); transition: transform .32s cubic-bezier(.5,0,.2,1); }
+.leaf-right { transform-origin: left center; transform: rotateY(calc((1 - var(--fold)) * 170deg)); transition: transform .32s cubic-bezier(.5,0,.2,1); }
 .leaf-right .face-front { border-radius: 5px 16px 16px 5px; }
 
 /* --- device thickness: four side walls per leaf form a real slab when spun --- */
@@ -290,7 +290,7 @@ a { color: var(--amber); text-decoration-thickness: 1px; text-underline-offset: 
 }
 /* Apple logo on the slate back — un-mirror it (it sits inside a rotateY(180) face) */
 .applemark-back {
-  position: relative; z-index: 1; width: 30px; height: 37px; transform: scaleX(-1);
+  position: relative; z-index: 1; width: 30px; height: 37px;
   fill: rgba(233,238,246,.9); filter: drop-shadow(0 1px 2px rgba(0,0,0,.5));
 }
 .applemark-screen {
