@@ -52,7 +52,8 @@ jobs:
           VERCEL_PROJECT_ID: prj_WTB6K53ZPqp1W8LQPwKdV05sXwvr
         run: |
           set -euo pipefail
-          url=$(npx --yes vercel@latest deploy --prod --yes --token="$VERCEL_TOKEN" 2>/dev/null | tail -1)
+          url=$(npx --yes vercel@latest deploy --prod --yes --token="$VERCEL_TOKEN" 2>&1 | grep -oE 'https://foldradar-[a-z0-9]+-tapuchips-projects\.vercel\.app' | head -1)
+          test -n "$url" || { echo "::error::could not extract deployment URL"; exit 1; }
           echo "Deployed: $url"
           npx --yes vercel@latest alias set "$url" foldradar.com     --token="$VERCEL_TOKEN"
           npx --yes vercel@latest alias set "$url" www.foldradar.com --token="$VERCEL_TOKEN"
