@@ -40,12 +40,16 @@ jobs:
             echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
 
-      # The git integration builds fine but never claims the foldradar.com domain,
-      # so publish with the Vercel CLI — a --prod deploy does take the domain.
+      # foldradar.com is detached from Vercel's auto-assignment: neither git nor
+      # CLI --prod deploys claim it, so we deploy and then alias it explicitly.
       - name: Publish to foldradar.com
         if: steps.commit.outputs.changed == 'true' && env.VERCEL_TOKEN != ''
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           VERCEL_ORG_ID: team_WnZJkSXAggvrkhYsPGsAXm2t
           VERCEL_PROJECT_ID: prj_WTB6K53ZPqp1W8LQPwKdV05sXwvr
-        run: npx --yes vercel@latest deploy --prod --yes --token="$VERCEL_TOKEN"
+        run: |
+          url=$(npx --yes vercel@latest deploy --prod --yes --token="$VERCEL_TOKEN" 2>/dev/null | tail -1)
+          echo "Deployed: $url"
+          npx --yes vercel@latest alias set "$url" foldradar.com --token="$VERCEL_TOKEN"
+          echo "foldradar.com now serves $url"
