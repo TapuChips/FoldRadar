@@ -236,7 +236,7 @@ a { color: var(--amber); text-decoration-thickness: 1px; text-underline-offset: 
     linear-gradient(178deg, #1b1030 0%, #0d0a1c 100%);
 }
 .leaf-left .face { border-radius: 16px 5px 5px 16px; }
-.leaf-right { transform-origin: left center; transform: rotateY(calc((1 - var(--fold)) * 170deg)); transition: transform .32s cubic-bezier(.5,0,.2,1); }
+.leaf-right { transform-origin: left center; transform: rotateY(calc((var(--fold) - 1) * 170deg)); transition: transform .32s cubic-bezier(.5,0,.2,1); }
 .leaf-right .face-front { border-radius: 5px 16px 16px 5px; }
 
 /* --- device thickness: four side walls per leaf form a real slab when spun --- */
@@ -478,6 +478,17 @@ tr:nth-child(even) td { background: color-mix(in srgb, var(--bg-soft) 60%, trans
 .feedlist a { color: var(--text); text-decoration: none; font-weight: 500; }
 .feedlist a:hover { color: var(--amber); }
 .feedlist .feedmeta { display: block; font-size: 0.78rem; color: var(--muted); margin-top: 0.15rem; }
+
+/* full news articles */
+.newsfeed { margin: 1.6rem 0; }
+.newsart {
+  background: var(--bg-soft); border: 1px solid var(--border); border-radius: 16px;
+  padding: 1.4rem 1.5rem 1.1rem; margin: 1.2rem 0; box-shadow: var(--shadow);
+  scroll-margin-top: 80px;
+}
+.newsart h2 { margin: 0 0 0.4rem; font-size: 1.28rem; line-height: 1.3; }
+.newsart p { margin: 0.7rem 0; }
+.newsart .digest-meta { margin: 0 0 0.3rem; }
 
 /* news digest — original summaries, credited, each with a CTA */
 .digest { list-style: none; padding: 0; margin: 1.4rem 0; }

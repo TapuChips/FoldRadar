@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Foldable News Today — Daily Digest | FoldRadar</title>
-<meta name="description" content="Today's foldable phone news in FoldRadar's words: iPhone Fold rumors, Galaxy Z Fold and Razr, summarized daily and credited to the source. Updated July 23, 2026.">
+<title>Foldable News Today — Daily Articles | FoldRadar</title>
+<meta name="description" content="Today's foldable phone news as full articles in FoldRadar's words: iPhone Fold rumors, Galaxy Z Fold and Razr coverage, credited to the source. Updated July 24, 2026.">
 <link rel="canonical" href="https://foldradar.com/news">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="/fonts/Inter-400.woff2" as="font" type="font/woff2" crossorigin>
@@ -233,7 +233,7 @@ a { color: var(--amber); text-decoration-thickness: 1px; text-underline-offset: 
     linear-gradient(178deg, #1b1030 0%, #0d0a1c 100%);
 }
 .leaf-left .face { border-radius: 16px 5px 5px 16px; }
-.leaf-right { transform-origin: left center; transform: rotateY(calc((1 - var(--fold)) * 170deg)); transition: transform .32s cubic-bezier(.5,0,.2,1); }
+.leaf-right { transform-origin: left center; transform: rotateY(calc((var(--fold) - 1) * 170deg)); transition: transform .32s cubic-bezier(.5,0,.2,1); }
 .leaf-right .face-front { border-radius: 5px 16px 16px 5px; }
 
 /* --- device thickness: four side walls per leaf form a real slab when spun --- */
@@ -476,6 +476,17 @@ tr:nth-child(even) td { background: color-mix(in srgb, var(--bg-soft) 60%, trans
 .feedlist a:hover { color: var(--amber); }
 .feedlist .feedmeta { display: block; font-size: 0.78rem; color: var(--muted); margin-top: 0.15rem; }
 
+/* full news articles */
+.newsfeed { margin: 1.6rem 0; }
+.newsart {
+  background: var(--bg-soft); border: 1px solid var(--border); border-radius: 16px;
+  padding: 1.4rem 1.5rem 1.1rem; margin: 1.2rem 0; box-shadow: var(--shadow);
+  scroll-margin-top: 80px;
+}
+.newsart h2 { margin: 0 0 0.4rem; font-size: 1.28rem; line-height: 1.3; }
+.newsart p { margin: 0.7rem 0; }
+.newsart .digest-meta { margin: 0 0 0.3rem; }
+
 /* news digest — original summaries, credited, each with a CTA */
 .digest { list-style: none; padding: 0; margin: 1.4rem 0; }
 .digest-item { padding: 1rem 0; border-bottom: 1px solid var(--border); }
@@ -543,15 +554,15 @@ footer.site a { color: var(--muted); }
 
 </style>
 <meta property="og:type" content="website">
-<meta property="og:title" content="Foldable News Today — Daily Digest">
-<meta property="og:description" content="The day's foldable phone stories, summarized in FoldRadar's words. Updated daily.">
+<meta property="og:title" content="Foldable News Today — Daily Articles">
+<meta property="og:description" content="The day's foldable stories as full articles, written by FoldRadar. Updated daily.">
 <meta property="og:url" content="https://foldradar.com/news">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "WebPage",
-  "name": "Foldable news today — daily digest",
-  "dateModified": "2026-07-23",
+  "name": "Foldable news today — daily articles",
+  "dateModified": "2026-07-24",
   "mainEntityOfPage": "https://foldradar.com/news",
   "publisher": { "@id": "https://foldradar.com/#org" }
 }
@@ -572,75 +583,91 @@ footer.site a { color: var(--muted); }
 <main>
   <p class="crumbs"><a href="/">FoldRadar</a> › News</p>
   <h1>Foldable news today</h1>
-  <p class="updated">Auto-updated daily · Last refresh: July 23, 2026</p>
-  <p class="lead">The day's foldable stories — iPhone Fold rumors, Galaxy Z Fold, Razr and everything with a hinge — summarized in our own words and credited to the reporters who broke them.</p>
+  <p class="updated">Auto-updated daily · Last refresh: July 24, 2026</p>
+  <p class="lead">The day's foldable stories — iPhone Fold, Galaxy Z Fold, Razr and everything with a hinge — written up in full by FoldRadar and credited to the reporters and creators who broke them.</p>
 
-  <ul class="digest">
-    <li class="digest-item">
-      <p class="digest-text">Early online reception for Samsung&#x27;s Galaxy Z Fold 8 has been overwhelmingly positive among tech enthusiasts and consumers.</p>
-      <p class="digest-meta"><span class="via">via Shane Craig</span><a class="digest-cta" href="/iphone-fold">Read the iPhone Fold tracker →</a></p>
-    </li>
-    <li class="digest-item">
-      <p class="digest-text">Clarification has emerged that the base Samsung Galaxy Z Fold 8 model does not carry the premium Ultra designation.</p>
-      <p class="digest-meta"><span class="via">via Average Dad</span><a class="digest-cta" href="/which-foldable">Which foldable fits you? →</a></p>
-    </li>
-    <li class="digest-item">
-      <p class="digest-text">Hands-on testing and in-depth evaluations of Samsung&#x27;s Galaxy Z Fold 8 are officially underway.</p>
-      <p class="digest-meta"><span class="via">via GSMArena</span><a class="digest-cta" href="/best-foldable-phones">See the best foldables →</a></p>
-    </li>
-    <li class="digest-item">
-      <p class="digest-text">Major US carriers are running promotions featuring a complimentary Galaxy Z Fold 8 or the higher-tier Ultra variant for two hundred dollars.</p>
-      <p class="digest-meta"><span class="via">via GSMArena</span><a class="digest-cta" href="/news#launch-alert">Get the launch alert →</a></p>
-    </li>
-    <li class="digest-item">
-      <p class="digest-text">A comprehensive round-up provides a final summary of all recent announcements surrounding Samsung&#x27;s newest folding line and Flip 8 device.</p>
-      <p class="digest-meta"><span class="via">via GSMArena</span><a class="digest-cta" href="/iphone-fold-vs-galaxy-z-fold">iPhone Fold vs Z Fold →</a></p>
-    </li>
-    <li class="digest-item">
-      <p class="digest-text">Users of Samsung&#x27;s newest foldable hardware can now access Android 17&#x27;s updated feature designed to simplify switching from an iPhone.</p>
-      <p class="digest-meta"><span class="via">via GSMArena</span><a class="digest-cta" href="/iphone-fold">Read the iPhone Fold tracker →</a></p>
-    </li>
-    <li class="digest-item">
-      <p class="digest-text">Recent changes to purchase incentives have made acquiring the Galaxy Z Fold 8 less appealing for customers transitioning from rival platforms.</p>
-      <p class="digest-meta"><span class="via">via 9to5Google</span><a class="digest-cta" href="/which-foldable">Which foldable fits you? →</a></p>
-    </li>
-    <li class="digest-item">
-      <p class="digest-text">A recent device design offers the nearest experience consumers may see to a Google-branded clamshell foldable phone.</p>
-      <p class="digest-meta"><span class="via">via 9to5Google</span><a class="digest-cta" href="/best-foldable-phones">See the best foldables →</a></p>
-    </li>
-    <li class="digest-item">
-      <p class="digest-text">New promotional discounts include price cuts and bundled accessories across Samsung&#x27;s newest foldables, smartwatches, and related charging hardware.</p>
-      <p class="digest-meta"><span class="via">via 9to5Google</span><a class="digest-cta" href="/news#launch-alert">Get the launch alert →</a></p>
-    </li>
-    <li class="digest-item">
-      <p class="digest-text">Developers are being encouraged by Google to optimize their Android applications for wider foldable screen layouts found on newer hardware.</p>
-      <p class="digest-meta"><span class="via">via 9to5Google</span><a class="digest-cta" href="/iphone-fold-vs-galaxy-z-fold">iPhone Fold vs Z Fold →</a></p>
-    </li>
-    <li class="digest-item">
-      <p class="digest-text">Readers are invited to participate in a live question-and-answer session regarding the design and performance of Samsung&#x27;s wider foldable device.</p>
-      <p class="digest-meta"><span class="via">via 9to5Google</span><a class="digest-cta" href="/iphone-fold">Read the iPhone Fold tracker →</a></p>
-    </li>
-    <li class="digest-item">
-      <p class="digest-text">Manufacturing challenges continue to delay the development and potential release of Apple&#x27;s rumored foldable smartphone.</p>
-      <p class="digest-meta"><span class="via">via MacRumors</span><a class="digest-cta" href="/which-foldable">Which foldable fits you? →</a></p>
-    </li>
-    <li class="digest-item">
-      <p class="digest-text">Initial performance testing on Samsung&#x27;s newly released foldable phones has sparked debate regarding their benchmark scores.</p>
-      <p class="digest-meta"><span class="via">via Android Authority</span><a class="digest-cta" href="/best-foldable-phones">See the best foldables →</a></p>
-    </li>
-    <li class="digest-item">
-      <p class="digest-text">Executive leadership at Samsung has clarified the reasons behind lower domestic retail pricing for the Galaxy Z Fold 8 lineup in South Korea.</p>
-      <p class="digest-meta"><span class="via">via Android Authority</span><a class="digest-cta" href="/news#launch-alert">Get the launch alert →</a></p>
-    </li>
-    <li class="digest-item">
-      <p class="digest-text">Potential plans to discontinue Samsung&#x27;s compact clamshell lineup after its next iteration raise concerns for the broader foldable market.</p>
-      <p class="digest-meta"><span class="via">via Android Authority</span><a class="digest-cta" href="/iphone-fold-vs-galaxy-z-fold">iPhone Fold vs Z Fold →</a></p>
-    </li>
-    <li class="digest-item">
-      <p class="digest-text">Excluding stylus compatibility from the Galaxy Z Fold 8 represents a risky strategy that could alienate power users.</p>
-      <p class="digest-meta"><span class="via">via Android Authority</span><a class="digest-cta" href="/iphone-fold">Read the iPhone Fold tracker →</a></p>
-    </li>
-  </ul>
+  <div class="newsfeed">
+    <article class="newsart" id="s1">
+      <h2>Online Excitement Grows Around Samsung&#x27;s Galaxy Z Fold 8 Launch</h2>
+      <p class="digest-meta"><span class="via">via Shane Craig</span><span class="feedmeta">2026-07-23</span></p>
+      <p>Online enthusiasm for Samsung&#x27;s newly introduced Galaxy Z Fold 8 is building rapidly across tech platforms. As creator Shane Craig highlighted in his latest video, the internet is showing strong excitement for the new foldable model. Initial reactions suggest that consumers and tech enthusiasts are responding warmly to Samsung&#x27;s latest direction for its book-style foldable lineup.</p>
+      <p>The enthusiasm surrounds the shifting dynamics in Samsung&#x27;s foldable lineup, which now features updated designs and refined form factors. Online discussions across tech forums and community channels indicate that potential buyers are closely tracking how this new hardware performs. As discussion grows, user feedback is focusing heavily on how Samsung has rethought its flagship foldable experience to appeal to a broader audience.</p>
+      <p>For prospective foldable buyers, strong community sentiment is a comforting signal when considering a major device purchase. High interest usually leads to vibrant user communities, faster software optimization, and better third-party accessory support. If you are waiting to see how the broader market receives the Galaxy Z Fold 8, the initial wave of positive online feedback suggests the device is off to a promising start.</p>
+      <p><a class="buylink" href="/iphone-fold">Read the iPhone Fold tracker →</a></p>
+    </article>
+    <article class="newsart" id="s2">
+      <h2>Understanding the Hardware Boundaries of Samsung&#x27;s Galaxy Z Fold 8</h2>
+      <p class="digest-meta"><span class="via">via Average Dad</span><span class="feedmeta">2026-07-23</span></p>
+      <p>Tech commentators are examining the distinctions within Samsung&#x27;s expanding foldable family. In a recent video from tech reviewer Average Dad, the creator breaks down why the standard Galaxy Z Fold 8 should not be confused with an Ultra tier device. The discussion centers on what specific characteristics actually define an Ultra product versus a standard flagship model in today&#x27;s market.</p>
+      <p>Samsung has split its foldable lineup into distinct tiers, reserving the Ultra designation for a separate, higher-tier device. The base Galaxy Z Fold 8 offers a refreshed user experience, but it lacks some of the extreme hardware pushes found on its Ultra counterpart. Understanding these product boundaries helps clarify how Samsung is segmenting its offerings for different types of power users and everyday consumers.</p>
+      <p>For buyers in the market for a new foldable, knowing the difference between the standard Z Fold 8 and an Ultra model is essential for spending wisely. You need to decide whether you require top-tier Ultra capabilities or if the standard Z Fold 8 fits your daily needs. Recognizing these product tiers prevents overpaying for features you might not actually use.</p>
+      <p><a class="buylink" href="/which-foldable">Which foldable fits you? Take the quiz →</a></p>
+    </article>
+    <article class="newsart" id="s3">
+      <h2>Samsung Galaxy Z Fold 8 Lands on Review Bench Ahead of Launch</h2>
+      <p class="digest-meta"><span class="via">via GSMArena</span><span class="feedmeta">2026-07-23</span></p>
+      <p>The Samsung Galaxy Z Fold 8 has arrived in the review queue at GSMArena following an initial hands-on look at the device. Testers are unboxing the new foldable phone to evaluate its real-world performance and hardware feel. The device is being compared against the Galaxy Z Fold 8 Ultra to see how both models handle various types of media and daily tasks.</p>
+      <p>According to reporting by GSMArena, the base 12/256GB model carries a starting price of €1,999 or £1,699, with only a USB-C cable included inside the retail packaging. Buyers can choose between Graphite, Cream, and Lavender finishes, alongside an exclusive Pistachio colorway on Samsung.com. In hand, the handset offers a novel feel compared to the taller folding designs of previous generations.</p>
+      <p>For buyers considering a high-end foldable, these unboxing details highlight both the luxury pricing and physical redesign of Samsung&#x27;s latest generation. The new aspect ratio shifts how the device feels during one-handed use and media consumption. If you plan to buy one, keeping an eye on forthcoming full reviews will help determine if the updated shape justifies the steep entry cost.</p>
+      <p><a class="buylink" href="/best-foldable-phones">See the best foldables you can buy →</a></p>
+    </article>
+    <article class="newsart" id="s4">
+      <h2>US Carriers Roll Out Massive Subsidies for Galaxy Z Fold 8 Series</h2>
+      <p class="digest-meta"><span class="via">via GSMArena</span><span class="feedmeta">2026-07-23</span></p>
+      <p>Major US wireless carriers are rolling out aggressive promotions for Samsung&#x27;s latest foldable generation. As reported by GSMArena, major networks including T-Mobile and AT&amp;T are offering the standard Galaxy Z Fold 8 for free with qualifying carrier deals, while the higher-end Galaxy Z Fold 8 Ultra is available for as low as $200 through these carrier incentives.</p>
+      <p>Direct purchases from Samsung US feature pre-order savings, including $150 off the Z Flip 8 and $200 off both Fold models, plus an additional $100 bonus for checking out with PayPal. These promotions help offset retail price hikes, as the Z Flip 8 and Z Fold 8 Ultra are both $100 more expensive than their predecessors, making carrier trade-in programs especially appealing.</p>
+      <p>For consumers shopping for a new foldable, carrier subsidies remain one of the most effective ways to lower upfront costs. Given the rising list prices across Samsung&#x27;s lineup, taking advantage of trade-ins or carrier financing can save hundreds of dollars. Checking carrier terms will help you decide whether buying unlocked or opting for a carrier deal yields the best overall value.</p>
+      <p><a class="buylink" href="/news#launch-alert">Get the iPhone Fold launch alert →</a></p>
+    </article>
+    <article class="newsart" id="s5">
+      <h2>Samsung Reshapes Foldable Family with Updated Displays and Ultra Tier</h2>
+      <p class="digest-meta"><span class="via">via GSMArena</span><span class="feedmeta">2026-07-23</span></p>
+      <p>Samsung has officially restructured its folding smartphone lineup with the launch of the Galaxy Z Fold 8 series and the Galaxy Z Flip 8. In a detailed coverage wrap-up by GSMArena, the publication clarifies that the standard Z Fold 8 introduces a completely new form factor rather than directly replacing last year&#x27;s Galaxy Z Fold 7 model in the product stack.</p>
+      <p>The new Galaxy Z Fold 8 sports a wider 16:10 cover display paired with a 4:3 internal screen. Meanwhile, the true direct successor to the Z Fold 7 is the Galaxy Z Fold 8 Ultra, which incorporates a 5,000mAh silicon-carbon battery that adds 600mAh over its predecessor. Additionally, the new Galaxy Z Flip 8 arrives with a slimmer and lighter chassis design.</p>
+      <p>This lineup restructuring gives foldable buyers distinct form factor options depending on how they prefer to interact with screen ratios. Users seeking maximum battery life and traditional proportions can target the Ultra model, while those wanting wider screen dimensions have the base Z Fold 8. Understanding these structural changes ensures you select the foldable that best matches your daily productivity.</p>
+      <p><a class="buylink" href="/iphone-fold-vs-galaxy-z-fold">iPhone Fold vs Galaxy Z Fold →</a></p>
+    </article>
+    <article class="newsart" id="s6">
+      <h2>Android 17 Data Migration Tool Arrives on Samsung&#x27;s Newest Foldables</h2>
+      <p class="digest-meta"><span class="via">via GSMArena</span><span class="feedmeta">2026-07-23</span></p>
+      <p>Google has expanded access to its upgraded Android Switch iOS migration tool, which was originally unveiled during the Android Show I/O Edition 2026. According to GSMArena, the enhanced data transfer feature is now officially available on Samsung&#x27;s newly launched Galaxy Z Fold 8, Galaxy Z Fold 8 Ultra, and Galaxy Z Flip 8 foldable devices running Android 17.</p>
+      <p>The updated migration tool is designed to simplify switching from an iPhone to an Android device. Beyond Samsung&#x27;s latest foldables, the feature is also rolling out to Google Pixel 8, Pixel 9, and Pixel 10 series devices running Android 17. However, Google confirmed that older hardware like the Pixel 6 and Pixel 7 series will not receive this upgraded utility.</p>
+      <p>For iPhone owners contemplating a move to a foldable phone, this improved switching software removes significant friction from the transition process. Transferring photos, messages, and account details to a Galaxy Z Fold 8 or Z Flip 8 is now smoother than before. If ecosystem lock-in held you back, this upgraded tool makes trying Samsung&#x27;s foldables much easier.</p>
+      <p><a class="buylink" href="/iphone-fold">Read the iPhone Fold tracker →</a></p>
+    </article>
+    <article class="newsart" id="s7">
+      <h2>Samsung Trade-In Deals Face Criticism Over Platform Switcher Value</h2>
+      <p class="digest-meta"><span class="via">via 9to5Google</span><span class="feedmeta">2026-07-23</span></p>
+      <p>Samsung is aiming to attract new customers with its newly launched Galaxy Z Fold 8 series, but its promotional strategy may be backfiring. An analysis by 9to5Google argues that Samsung has structured its financial incentives poorly, making the new foldable device a surprisingly worse deal for customers looking to switch over from rival smartphone brands.</p>
+      <p>While Samsung heavily emphasizes switching to its latest folding hardware, critics point out that the company&#x27;s current trade-in valuations and promotional spending target existing loyalists rather than competitive switchers. By allocating trade-in bonuses and perks less effectively for non-Samsung trade-ins, the company creates financial friction for prospective buyers coming from competing mobile ecosystems.</p>
+      <p>For buyers looking to transition away from other smartphone brands, understanding trade-in structures is crucial before making a purchase. If competitive trade-in values are disappointing, switchers may want to look into carrier promotions or wait for seasonal discounts. Carefully calculating the net price ensures you do not overpay when jumping to Samsung&#x27;s folding platform.</p>
+      <p><a class="buylink" href="/which-foldable">Which foldable fits you? Take the quiz →</a></p>
+    </article>
+    <article class="newsart" id="s8">
+      <h2>Galaxy Z Flip 8 Delivers the Experience Pixel Fans Have Been Waiting For</h2>
+      <p class="digest-meta"><span class="via">via 9to5Google</span><span class="feedmeta">2026-07-23</span></p>
+      <p>Fans hoping for a foldable clamshell device built directly by Google will likely remain disappointed for the foreseeable future. According to a report by 9to5Google, a dedicated Google Pixel Flip is not in development, but Samsung&#x27;s design changes on the new Galaxy Z Flip 8 closely mirror what a Pixel flip phone might have delivered.</p>
+      <p>The latest adjustments to the Galaxy Z Flip 8 software experience and physical build bring a cleaner, more streamlined approach that feels reminiscent of Google&#x27;s design philosophy. Rather than waiting for a hardware release that is not coming, consumers interested in a Pixel-like clamshell experience will find Samsung&#x27;s newest Flip device filling that exact market void.</p>
+      <p>For foldable enthusiasts who prefer Google&#x27;s minimalist software and hardware aesthetics, the Galaxy Z Flip 8 serves as the closest practical alternative available. Since Google is not releasing its own flip phone, Samsung&#x27;s latest refinement provides the best combination of compact folding hardware and polished Android software. It is a solid choice for Pixel fans wanting a clamshell.</p>
+      <p><a class="buylink" href="/best-foldable-phones">See the best foldables you can buy →</a></p>
+    </article>
+    <article class="newsart" id="s9">
+      <h2>Early Galaxy Z Fold 8 Buyer Promotions Deliver Massive Bundle Savings</h2>
+      <p class="digest-meta"><span class="via">via 9to5Google</span><span class="feedmeta">2026-07-23</span></p>
+      <p>Pre-order promotions for Samsung&#x27;s new foldable hardware are currently live with steep savings across multiple products. As highlighted in a deals roundup by 9to5Google, shoppers can grab the Galaxy Z Fold 8, Fold 8 Ultra, and Flip 8 with $100 instant cash discounts, up to $200 in store credits, and maximum trade-in savings reaching up to $1,230.</p>
+      <p>Bundling offers also allow buyers to score a free set of Galaxy Buds 4 Pro valued at $250 with their phone order. Additional tech discounts include massive price drops on accessories, such as $300 off the Galaxy Watch Ultra 2, savings on the Galaxy Watch 9, and a 45% discount on the official Google Pixel Flex Dual Port charger.</p>
+      <p>For buyers ready to upgrade, taking advantage of pre-order incentives substantially reduces the effective price of Samsung&#x27;s expensive new foldables. Getting free premium earbuds and heavy accessory discounts adds immense extra value to an upgrade. Taking action during this initial sales window ensures you maximize total savings before standard retail pricing takes effect.</p>
+      <p><a class="buylink" href="/news#launch-alert">Get the iPhone Fold launch alert →</a></p>
+    </article>
+    <article class="newsart" id="s10">
+      <h2>Google Urges App Developers to Adapt for Ultra-Wide Foldable Screens</h2>
+      <p class="digest-meta"><span class="via">via 9to5Google</span><span class="feedmeta">2026-07-23</span></p>
+      <p>Google is encouraging app developers to optimize their software for a new category of foldable screen dimensions. As reported by 9to5Google, the tech giant is urging Android developers to better support what it calls ultra-wide foldables, a segment highlighted by the launch of Samsung&#x27;s newly redesigned Galaxy Z Fold 8 series.</p>
+      <p>The shift in hardware aspect ratios on the Galaxy Z Fold 8 creates a wider viewing area that requires updated app layouts to prevent awkward scaling or black bars. Google&#x27;s push aims to ensure popular Android applications adapt smoothly to these wider inner displays, encouraging responsive multi-window multitasking and improved media playback layouts across the platform.</p>
+      <p>For potential Galaxy Z Fold 8 buyers, Google&#x27;s developer push is vital for ensuring a polished day-to-day software experience. Wider foldable displays are only as good as the software optimized for them. As more Android apps adopt responsive designs for ultra-wide screens, users will enjoy better app continuity and far superior productivity performance.</p>
+      <p><a class="buylink" href="/iphone-fold-vs-galaxy-z-fold">iPhone Fold vs Galaxy Z Fold →</a></p>
+    </article>
+  </div>
 
   <div class="notify" id="launch-alert">
     <h2>One email when the iPhone Fold is announced</h2>
@@ -654,7 +681,7 @@ footer.site a { color: var(--muted); }
     </form>
   </div>
 
-  <p class="disclosure">Summaries are FoldRadar's own, written from public reporting and credited to the outlet or creator named — GSMArena, MacRumors, 9to5Google, Android Authority, Shane Craig and Average Dad. We don't republish their text; we point you to our own coverage.</p>
+  <p class="disclosure">Articles are written by FoldRadar from public reporting and credited to the outlet or creator named — GSMArena, MacRumors, 9to5Google, Android Authority, Shane Craig and Average Dad. We don't republish their text.</p>
 </main>
 <footer class="site">
   <div class="inner">

@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 """FoldRadar daily news builder.
 
-Pulls RSS/Atom feeds from foldable-focused creators and phone-news sites,
-then rewrites each item into ONE original sentence in FoldRadar's voice and
-publishes it on /news. Sources are credited by name (no outbound links) so
-readers stay on-site; every item carries a CTA into our own coverage.
+Pulls RSS/Atom feeds (title + description) from foldable-focused creators and
+phone-news sites, then writes a FULL original article per story in FoldRadar's
+voice — headline plus several paragraphs — grounded in the feed's own text.
+Sources are credited by name (no outbound links); every article ends with a CTA
+into our own pages so readers stay on-site.
 
-Rewriting prefers the Gemini API (free tier) via GEMINI_API_KEY, falls back to
-OpenAI via OPENAI_API_KEY, and if neither is set uses the headline text so the
-page still builds. Add GEMINI_API_KEY as a GitHub Actions secret for the daily
-run. Run daily by GitHub Actions.
+Writing prefers the Gemini API (free tier) via GEMINI_API_KEY, falls back to
+OpenAI via OPENAI_API_KEY; with no key it renders headline + feed snippet so
+the page still builds. Run twice daily by GitHub Actions.
 """
 import datetime
 import html
@@ -40,20 +40,30 @@ KEYWORDS = re.compile(
 )
 NS = {"atom": "http://www.w3.org/2005/Atom", "media": "http://search.yahoo.com/mrss/"}
 
-# CTAs rotated across items so every entry drives into our own pages
+# CTAs rotated across articles so every story funnels into our own pages
 CTAS = [
     ("/iphone-fold", "Read the iPhone Fold tracker"),
-    ("/which-foldable", "Which foldable fits you?"),
-    ("/best-foldable-phones", "See the best foldables"),
-    ("/news#launch-alert", "Get the launch alert"),
-    ("/iphone-fold-vs-galaxy-z-fold", "iPhone Fold vs Z Fold"),
+    ("/which-foldable", "Which foldable fits you? Take the quiz"),
+    ("/best-foldable-phones", "See the best foldables you can buy"),
+    ("/news#launch-alert", "Get the iPhone Fold launch alert"),
+    ("/iphone-fold-vs-galaxy-z-fold", "iPhone Fold vs Galaxy Z Fold"),
 ]
+
+ARTICLE_COUNT = 10
 
 
 def fetch(url):
     req = urllib.request.Request(url, headers={"User-Agent": "FoldRadarBot/1.0 (+https://foldradar.com)"})
     with urllib.request.urlopen(req, timeout=30) as r:
         return r.read()
+
+
+def clean_text(s, limit=500):
+    """Strip tags/entities/whitespace from a feed description."""
+    s = re.sub(r"<[^>]+>", " ", s or "")
+    s = html.unescape(s)
+    s = re.sub(r"\s+", " ", s).strip()
+    return s[:limit]
 
 
 def parse_feed(label, url, kind, filtered):
@@ -67,30 +77,43 @@ def parse_feed(label, url, kind, filtered):
         for entry in root.findall("atom:entry", NS):
             title = (entry.findtext("atom:title", "", NS) or "").strip()
             date = (entry.findtext("atom:published", "", NS) or "")[:10]
-            items.append({"title": title, "date": date, "source": label, "kind": kind})
+            group = entry.find("media:group", NS)
+            desc = clean_text(group.findtext("media:description", "", NS) if group is not None else "")
+            items.append({"title": title, "desc": desc, "date": date, "source": label, "kind": kind})
     else:  # RSS
         for it in root.iter("item"):
             title = (it.findtext("title") or "").strip()
+            desc = clean_text(it.findtext("description") or "")
             pub = it.findtext("pubDate") or ""
             try:
                 date = datetime.datetime.strptime(pub[5:16], "%d %b %Y").strftime("%Y-%m-%d")
             except ValueError:
                 date = ""
-            items.append({"title": title, "date": date, "source": label, "kind": kind})
+            items.append({"title": title, "desc": desc, "date": date, "source": label, "kind": kind})
     if filtered:
         items = [i for i in items if KEYWORDS.search(i["title"])]
     return items[:8]
 
 
+# ---------------- article writing ----------------
+
 def _prompt(items):
-    listing = "\n".join(f'{n+1}. "{i["title"]}" (source: {i["source"]})' for n, i in enumerate(items))
+    blocks = []
+    for n, i in enumerate(items):
+        blocks.append(f'STORY {n+1} (source: {i["source"]})\nTitle: {i["title"]}\nSnippet: {i["desc"] or "(none)"}')
     return (
-        "You are FoldRadar, an independent foldable-phone news site. For each headline "
-        "below, write ONE original sentence (max 28 words) summarizing the story for our "
-        "readers. Use your own wording — do NOT copy the headline's phrasing. Stay factual "
-        "and neutral; never invent details the headline does not state. Do not mention the "
-        'source in the sentence. Return ONLY JSON: {"summaries": ["...", ...]} in the same '
-        "order.\n\n" + listing
+        "You are the staff writer of FoldRadar, an independent site covering foldable "
+        "phones. For EACH story below, write a full short news article for our readers:\n"
+        "- an original headline (do not copy the source title's phrasing)\n"
+        "- exactly 3 paragraphs of 50-80 words each: what happened, the details/context, "
+        "and why it matters for foldable buyers\n"
+        "Rules: use ONLY facts present in the title/snippet plus widely-known background "
+        "about the products; never invent specs, prices, dates or quotes. Attribute the "
+        "reporting naturally once per article (e.g. 'according to GSMArena' or 'in his "
+        "latest video, Shane Craig...'). Neutral, clear, conversational tech-news tone. "
+        "No links, no markdown.\n"
+        'Return ONLY JSON: {"articles": [{"headline": "...", "body": ["p1", "p2", "p3"]}, ...]} '
+        "in the same order as the stories.\n\n" + "\n\n".join(blocks)
     )
 
 
@@ -99,10 +122,10 @@ def _gemini(prompt, key):
     url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={key}"
     body = json.dumps({
         "contents": [{"parts": [{"text": prompt}]}],
-        "generationConfig": {"temperature": 0.6, "responseMimeType": "application/json"},
+        "generationConfig": {"temperature": 0.65, "responseMimeType": "application/json"},
     }).encode()
     req = urllib.request.Request(url, data=body, headers={"Content-Type": "application/json"})
-    with urllib.request.urlopen(req, timeout=60) as r:
+    with urllib.request.urlopen(req, timeout=120) as r:
         data = json.loads(r.read())
     return data["candidates"][0]["content"]["parts"][0]["text"]
 
@@ -111,40 +134,45 @@ def _openai(prompt, key):
     body = json.dumps({
         "model": "gpt-4o-mini",
         "messages": [{"role": "user", "content": prompt}],
-        "temperature": 0.6,
+        "temperature": 0.65,
         "response_format": {"type": "json_object"},
     }).encode()
     req = urllib.request.Request(
         "https://api.openai.com/v1/chat/completions", data=body,
         headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"},
     )
-    with urllib.request.urlopen(req, timeout=60) as r:
+    with urllib.request.urlopen(req, timeout=120) as r:
         return json.loads(r.read())["choices"][0]["message"]["content"]
 
 
-def summarize(items):
-    """Rewrite each headline as one original sentence. Prefers Gemini (free tier),
-    then OpenAI; falls back to the raw headline if no key is set or on error."""
+def write_articles(items):
+    """Return list of {'headline': str, 'body': [p, ...]} aligned with items."""
+    fallback = [{"headline": i["title"], "body": [i["desc"] or "Details are still emerging on this one."]} for i in items]
     if not items:
         return []
     gkey = os.environ.get("GEMINI_API_KEY", "").strip()
     okey = os.environ.get("OPENAI_API_KEY", "").strip()
     if not gkey and not okey:
-        return [i["title"] for i in items]
+        print("   (no LLM key — publishing headlines + snippets)")
+        return fallback
     provider = "Gemini" if gkey else "OpenAI"
     try:
         content = _gemini(_prompt(items), gkey) if gkey else _openai(_prompt(items), okey)
-        out = json.loads(content).get("summaries", [])
+        out = json.loads(content).get("articles", [])
         result = []
         for n, i in enumerate(items):
-            s = out[n].strip() if n < len(out) and isinstance(out[n], str) and out[n].strip() else i["title"]
-            result.append(s)
-        print(f"   rewrote {len(items)} items via {provider}")
+            a = out[n] if n < len(out) and isinstance(out[n], dict) else {}
+            head = (a.get("headline") or "").strip() or i["title"]
+            body = [p.strip() for p in a.get("body", []) if isinstance(p, str) and p.strip()]
+            result.append({"headline": head, "body": body or fallback[n]["body"]})
+        print(f"   wrote {len(result)} full articles via {provider}")
         return result
     except Exception as e:
-        print(f"   ({provider} rewrite failed: {str(e)[:90]} — using headlines)")
-        return [i["title"] for i in items]
+        print(f"   ({provider} article writing failed: {str(e)[:90]} — headlines only)")
+        return fallback
 
+
+# ---------------- page build ----------------
 
 def build():
     all_items = []
@@ -154,50 +182,50 @@ def build():
         all_items.extend(got)
 
     all_items.sort(key=lambda i: i["date"], reverse=True)
-    digest = all_items[:16]
-    summaries = summarize(digest)
-    for it, s in zip(digest, summaries):
-        it["summary"] = s
+    stories = all_items[:ARTICLE_COUNT]
+    articles = write_articles(stories)
 
     today = datetime.date.today()
     updated_human = today.strftime("%B %d, %Y")
 
-    def card(item, idx):
-        s = html.escape(item["summary"])
-        src = html.escape(item["source"])
+    def render(item, art, idx):
         cta_url, cta_label = CTAS[idx % len(CTAS)]
+        head = html.escape(art["headline"])
+        paras = "\n".join(f"      <p>{html.escape(p)}</p>" for p in art["body"])
         return (
-            '    <li class="digest-item">\n'
-            f'      <p class="digest-text">{s}</p>\n'
-            f'      <p class="digest-meta"><span class="via">via {src}</span>'
-            f'<a class="digest-cta" href="{cta_url}">{html.escape(cta_label)} →</a></p>\n'
-            '    </li>'
+            f'    <article class="newsart" id="s{idx+1}">\n'
+            f'      <h2>{head}</h2>\n'
+            f'      <p class="digest-meta"><span class="via">via {html.escape(item["source"])}</span>'
+            f'<span class="feedmeta">{item["date"]}</span></p>\n'
+            f"{paras}\n"
+            f'      <p><a class="buylink" href="{cta_url}">{html.escape(cta_label)} →</a></p>\n'
+            f'    </article>'
         )
 
-    digest_html = "\n".join(card(it, n) for n, it in enumerate(digest)) \
-        or '    <li class="digest-item"><p class="digest-text">No fresh foldable stories today — check back tomorrow.</p></li>'
+    articles_html = "\n".join(render(it, a, n) for n, (it, a) in enumerate(zip(stories, articles))) \
+        or '    <p>No fresh foldable stories today — check back tomorrow.</p>'
 
     page = f"""<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Foldable News Today — Daily Digest | FoldRadar</title>
-<meta name="description" content="Today's foldable phone news in FoldRadar's words: iPhone Fold rumors, Galaxy Z Fold and Razr, summarized daily and credited to the source. Updated {updated_human}.">
+<title>Foldable News Today — Daily Articles | FoldRadar</title>
+<meta name="description" content="Today's foldable phone news as full articles in FoldRadar's words: iPhone Fold rumors, Galaxy Z Fold and Razr coverage, credited to the source. Updated {updated_human}.">
 <link rel="canonical" href="https://foldradar.com/news">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="/fonts/Inter-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/fonts/SpaceGrotesk-700.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/style.css">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Foldable News Today — Daily Digest">
-<meta property="og:description" content="The day's foldable phone stories, summarized in FoldRadar's words. Updated daily.">
+<meta property="og:title" content="Foldable News Today — Daily Articles">
+<meta property="og:description" content="The day's foldable stories as full articles, written by FoldRadar. Updated daily.">
 <meta property="og:url" content="https://foldradar.com/news">
 <script type="application/ld+json">
 {{
   "@context": "https://schema.org",
   "@type": "WebPage",
-  "name": "Foldable news today — daily digest",
+  "name": "Foldable news today — daily articles",
   "dateModified": "{today.isoformat()}",
   "mainEntityOfPage": "https://foldradar.com/news",
   "publisher": {{ "@id": "https://foldradar.com/#org" }}
@@ -220,11 +248,11 @@ def build():
   <p class="crumbs"><a href="/">FoldRadar</a> › News</p>
   <h1>Foldable news today</h1>
   <p class="updated">Auto-updated daily · Last refresh: {updated_human}</p>
-  <p class="lead">The day's foldable stories — iPhone Fold rumors, Galaxy Z Fold, Razr and everything with a hinge — summarized in our own words and credited to the reporters who broke them.</p>
+  <p class="lead">The day's foldable stories — iPhone Fold, Galaxy Z Fold, Razr and everything with a hinge — written up in full by FoldRadar and credited to the reporters and creators who broke them.</p>
 
-  <ul class="digest">
-{digest_html}
-  </ul>
+  <div class="newsfeed">
+{articles_html}
+  </div>
 
   <div class="notify" id="launch-alert">
     <h2>One email when the iPhone Fold is announced</h2>
@@ -238,7 +266,7 @@ def build():
     </form>
   </div>
 
-  <p class="disclosure">Summaries are FoldRadar's own, written from public reporting and credited to the outlet or creator named — GSMArena, MacRumors, 9to5Google, Android Authority, Shane Craig and Average Dad. We don't republish their text; we point you to our own coverage.</p>
+  <p class="disclosure">Articles are written by FoldRadar from public reporting and credited to the outlet or creator named — GSMArena, MacRumors, 9to5Google, Android Authority, Shane Craig and Average Dad. We don't republish their text.</p>
 </main>
 <footer class="site">
   <div class="inner">
@@ -253,16 +281,15 @@ def build():
     css = (ROOT / "style.css").read_text(encoding="utf-8")
     page = inline_html(page, css)
     (ROOT / "news.html").write_text(page, encoding="utf-8", newline="\n")
-    print(f"news.html written: {len(digest)} digest items")
+    print(f"news.html written: {len(stories)} full articles")
 
-    # --- homepage "Today in foldables" strip: top 3 summaries, on-site ---
-    top3 = digest[:3]
+    # --- homepage strip: top 3 article headlines, linking to their anchors ---
     strip_lines = []
-    for item in top3:
-        s = html.escape(item.get("summary", item["title"]))
+    for n, (item, art) in enumerate(list(zip(stories, articles))[:3]):
+        h = html.escape(art["headline"])
         src = html.escape(item["source"])
         strip_lines.append(
-            f'      <li><a class="ns-item" href="/news">{s}</a>'
+            f'      <li><a class="ns-item" href="/news#s{n+1}">{h}</a>'
             f'<span class="feedmeta">via {src}</span></li>'
         )
     strip = "\n".join(strip_lines) or '      <li><a class="ns-item" href="/news">See today\'s foldable news →</a></li>'
@@ -275,7 +302,7 @@ def build():
         _, post = rest.split(end, 1)
         updated = pre + start + "\n" + strip + "\n" + end + post
         index_path.write_text(inline_html(updated, css), encoding="utf-8", newline="\n")
-        print(f"index.html strip updated: {len(top3)} items")
+        print("index.html strip updated: 3 items")
     else:
         print("!! NEWS-STRIP markers not found in index.html — strip skipped")
 
